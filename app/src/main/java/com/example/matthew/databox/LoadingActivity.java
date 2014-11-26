@@ -51,7 +51,7 @@ public class LoadingActivity extends Activity {
 
     public void sendMessage(View view)
     {
-        Intent intent = new Intent(LoadingActivity.this, MainActivity.class);
+        Intent intent = new Intent(LoadingActivity.this, LoginActivity.class);
         startActivity(intent);
     }
 
