@@ -103,11 +103,12 @@ public class LoadingActivity extends Activity {
                             // Schedule a hide().
                             delayedHide(AUTO_HIDE_DELAY_MILLIS);
                         }
-                        //Intent intent= new Intent(LoadingActivity.this,LoginActivity.class);
-                        //startActivity(intent);
+
                     }
                 });
-
+        delayedHide(AUTO_HIDE_DELAY_MILLIS);
+        Intent intent= new Intent(LoadingActivity.this,LoginActivity.class);
+        startActivity(intent);
         // Set up the user interaction to manually show or hide the system UI.
         contentView.setOnClickListener(new View.OnClickListener() {
             @Override
