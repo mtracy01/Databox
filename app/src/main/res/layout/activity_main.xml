@@ -4,14 +4,15 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.example.matthew.databox.MainActivity"
-    android:id="@+id/">
+    android:background="@drawable/nebulae"
+    tools:context="com.example.matthew.databox.MainActivity">
 
-    <TextView android:text="Ji is a cute bunny though..." android:layout_width="wrap_content"
+    <TextView android:text="Matthew is a fatty XD"
+        android:textColor="#80F2FFE1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView2"
         android:singleLine="true"
         android:layout_alignParentTop="true" />
-
 
 </RelativeLayout>
