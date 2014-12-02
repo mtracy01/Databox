@@ -4,10 +4,11 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:background="@drawable/nebulae"
-    tools:context="com.example.matthew.databox.MainActivity">
+    android:background="@drawable/s"
+    tools:context="com.example.matthew.databox.MainActivity"
+    android:id="@+id/matthew">
 
-    <TextView android:text="Matthew is a fatty XD"
+    <TextView android:text="Xiaojing is Super Cute!"
         android:textColor="#80F2FFE1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
