@@ -33,13 +33,13 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name="com.example.matthew.databox.LoadingActivity"
-            android:label="@string/title_activity_loading" >
+            android:name="com.example.matthew.databox.MainActivity"
+            android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="com.example.matthew.databox.MainActivity"
+            android:name="com.example.matthew.databox.LoadingActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_main"
+            android:label="@string/app_name"
             android:theme="@style/FullscreenTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
