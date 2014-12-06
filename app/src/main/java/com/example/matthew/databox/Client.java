@@ -12,7 +12,9 @@ public class Client {
     public static final int SERVERPORT = 6000;
     public final static String SERVER = "PUT THE SERVER ADDRESS HERE";
 
-    public static void send(String msg) throws IOException {
+    private String username = "";
+
+    public void send(String msg) throws IOException {
         Socket socket = null;
         OutputStreamWriter osw = null;
         BufferedWriter bw = null;
@@ -36,5 +38,13 @@ public class Client {
             if (socket != null)
                 socket.close();
         }
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }
