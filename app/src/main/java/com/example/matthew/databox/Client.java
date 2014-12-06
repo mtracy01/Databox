@@ -21,13 +21,13 @@ public class Client {
     private final static String UPLOAD = "UPLOAD";
     private final static String DOWNLOAD = "DOWNLOAD";
 
-    private static String username = "";
-    private static String password = "";
-    private static Socket socket;
-    private static OutputStreamWriter osw;
-    private static BufferedWriter bw;
-    private static InputStreamReader isr;
-    private static BufferedReader br;
+    private String username = "";
+    private String password = "";
+    private Socket socket;
+    private OutputStreamWriter osw;
+    private BufferedWriter bw;
+    private InputStreamReader isr;
+    private BufferedReader br;
 
     public Client(String username, String password) {
         this.username = username;
@@ -102,7 +102,7 @@ public class Client {
         }
     }
 
-    public static int setUsername(String username, String password) {
+    public void setUsername(String username, String password) {
         this.username = username;
     }
 
