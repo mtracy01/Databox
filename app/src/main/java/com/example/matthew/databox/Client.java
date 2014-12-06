@@ -21,6 +21,16 @@ public class Client {
         this.username = username;
     }
 
+    public int checkUserID(String userID, String password) {
+        Socket socket = null;
+        OutputStreamWriter osw = null;
+        BufferedWriter bw = null;
+        InputStreamReader isr = null;
+        BufferedReader br = null;
+
+
+    }
+
     public void send(String msg) throws IOException {
         Socket socket = null;
         OutputStreamWriter osw = null;
