@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.TextView;
+import java.sql.*;
 
 public class Server extends Activity{
     private ServerSocket serverSocket;
@@ -68,7 +69,9 @@ public class Server extends Activity{
             while(!Thread.currentThread().isInterrupted()) {
                 try {
                     String read = input.readLine();
-                    updateHandler.post(new updateUIThread( read ));
+                    if(read.contains("GETFILES")){
+                        updateHandler.post(new updateUIThread( read ));
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
