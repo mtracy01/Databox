@@ -50,7 +50,7 @@
         <activity
             android:name="com.example.matthew.databox.LoadingActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_loading"
+            android:label="@string/title_activity_main"
             android:theme="@style/FullscreenTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
