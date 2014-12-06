@@ -28,7 +28,7 @@ public class Client {
         InputStreamReader isr = null;
         BufferedReader br = null;
 
-
+        return 0;
     }
 
     public void send(String msg) throws IOException {
