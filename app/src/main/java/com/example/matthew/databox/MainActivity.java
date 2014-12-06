@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class MainActivity extends Activity {
 
     private static Button upload_b, download_b;
-    private ArrayList<String> files = new ArrayList<String>();
+    private static ArrayList<String> files = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +24,16 @@ public class MainActivity extends Activity {
 
         upload_b = (Button) findViewById(R.id.upload_b);
         download_b = (Button) findViewById(R.id.download_b);
+
+        Client client = new Client("username");
+    }
+
+    public static void addFile(String file) {
+        files.add(file);
+    }
+
+    public static void updateFiles() {
+        // TODO display all of the files in the files ArrayList
     }
 
    /* public void sendMessage(View view)
