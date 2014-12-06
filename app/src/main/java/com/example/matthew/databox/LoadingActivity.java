@@ -29,7 +29,7 @@ public class LoadingActivity extends Activity {
      * If {@link #AUTO_HIDE} is set, the number of milliseconds to wait after
      * user interaction before hiding the system UI.
      */
-    private static final int AUTO_HIDE_DELAY_MILLIS =10000;
+    private static final int AUTO_HIDE_DELAY_MILLIS =5000;
 
     /**
      * If set, will toggle the system UI visibility upon interaction. Otherwise,
