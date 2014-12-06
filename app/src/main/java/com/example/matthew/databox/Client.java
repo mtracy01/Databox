@@ -30,7 +30,7 @@ public class Client {
     private InputStreamReader isr;
     private BufferedReader br;
 
-    public Client(String username, String password) {
+    public Client(String username) {
         this.username = username;
     }
 
@@ -64,8 +64,6 @@ public class Client {
             bw.write(" " + userID + " " + password, 0, userID.length() + password.length() + 2);
             bw.flush();
 
-            // TODO wait for the server to do its thing?
-
             // TODO read back some stuff from server
 
             return 0;
@@ -89,9 +87,9 @@ public class Client {
             bw.write(" " + userID + " " + password, 0, userID.length() + password.length() + 2);
             bw.flush();
 
-            // TODO wait for the server to do its thing?
-
             // TODO read back some stuff from server
+
+            return 0;
         }
         catch (IOException e) {
             System.out.println("IO Exception: " + e.toString());
@@ -101,32 +99,69 @@ public class Client {
             e.printStackTrace();
             return 1;
         }
-
-        return 0;
     }
 
-    public int send(String msg) {
+    public int getFiles() {
+        try {
+            bw.write(GETFILES, 0, GETFILES.length());
+            bw.write(" " + username, 0, username.length() + 1);
+            bw.flush();
+
+            // Read the files the server writes back
+            String file = br.readLine();
+            while (file.length() != 0) {
+                MainActivity.addFile(file);
+                file = br.readLine();
+            }
+
+            // Tell MainActivity to update its TextView with the files
+            MainActivity.updateFiles();
+
+            return 0;
+        }
+        catch (IOException e) {
+            System.out.println("IO Exception: " + e.toString());
+            return 1;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return 1;
+        }
+    }
+
+    public int upload(String filename, byte[] data) {
         if (initSocket() == 1)
             return 1;
 
-        // Send our msg to the server
         try {
-            bw.write(msg, 0, msg.length());
+            bw.write(UPLOAD, 0, UPLOAD.length());
+            bw.write(" " + filename + "\n" + data, 0, filename.length() + data.length + 2);
             bw.flush();
 
-            if (msg.substring(0, 8).equals("GETFILES")) {
-                // If the message is requesting files read what the server returns
+            // TODO read back some stuff from server
 
-                // Read the files the server writes back
-                String file = br.readLine();
-                while (file.length() != 0) {
-                    MainActivity.addFile(file);
-                    file = br.readLine();
-                }
+            return 0;
+        }
+        catch (IOException e) {
+            System.out.println("IO Exception: " + e.toString());
+            return 1;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return 1;
+        }
+    }
 
-                // Tell MainActivity to update its TextView with the files
-                MainActivity.updateFiles();
-            }
+    public int download(String filename) {
+        if (initSocket() == 1)
+            return 1;
+
+        try {
+            bw.write(DOWNLOAD, 0, DOWNLOAD.length());
+            bw.write(" " + filename, 0, filename.length() + 1);
+            bw.flush();
+
+            // TODO read back some stuff from server
 
             return 0;
         }
