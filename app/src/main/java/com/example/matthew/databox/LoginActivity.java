@@ -122,9 +122,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             {
                 //Display message "Login successful"
 
-                attemptLogin() //Attempt login now that we have registered the user
+                attemptLogin(); //Attempt login now that we have registered the user
              }
-             */
+
         }
         else {
             //display error message
