@@ -102,7 +102,7 @@ public class Client {
         }
     }
 
-    public void setUsername(String username) {
+    public static int setUsername(String username, String password) {
         this.username = username;
     }
 

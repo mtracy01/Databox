@@ -108,9 +108,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         View focusView=null;
 
         if(!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)){
-            //Set username
+            int newUserValid = Client.setUsername(email,password);
             /*newUserValid=Client.sendMessage("ADD email password")
-            if(newUserValid!=1)
+            if(newUserValid==1)
             {
                 //display error message
                 return;
@@ -163,7 +163,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         }
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
+        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
@@ -188,12 +188,13 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return email.contains("@");
+        return email.contains("@") && !email.contains(" ");
     }
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+
+        return !password.isEmpty();
     }
 
     /**
