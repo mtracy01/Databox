@@ -6,15 +6,23 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import java.util.ArrayList;
 
 
 public class MainActivity extends Activity {
+
+    private static Button upload_b, download_b;
+    private ArrayList<String> files = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle("Databox");
+
+        upload_b = (Button) findViewById(R.id.upload_b);
+        download_b = (Button) findViewById(R.id.download_b);
     }
 
    /* public void sendMessage(View view)

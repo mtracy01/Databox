@@ -8,4 +8,7 @@
     <string name="title_activity_loading">LoadingActivity</string>
     <string name="dummy_button">Log In</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="upload">Upload</string>
+    <string name="download">Download</string>
+    <string name="no_files">You have no files :(</string>
 </resources>
