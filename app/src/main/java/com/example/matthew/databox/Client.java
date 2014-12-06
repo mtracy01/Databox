@@ -32,24 +32,32 @@ public class Client {
 
     public Client(String username, String password) {
         this.username = username;
+    }
 
-        // Set up all things that are good
+    private int initSocket() {
         try {
             socket = new Socket(SERVER, SERVERPORT);
             osw = new OutputStreamWriter(socket.getOutputStream());
             bw = new BufferedWriter(osw);
             isr = new InputStreamReader(socket.getInputStream());
             br = new BufferedReader(isr);
+
+            return 0;
         }
         catch (IOException e) {
             System.out.println("IO Exception: " + e.toString());
+            return 1;
         }
         catch (Exception e) {
             e.printStackTrace();
+            return 1;
         }
     }
 
     public int checkUserID(String userID, String password) {
+        if (initSocket() == 1)
+            return 1;
+
         // Send userID + password to server so it can check if that pair exists
         try {
             bw.write(USERID, 0, USERID.length());
@@ -73,6 +81,9 @@ public class Client {
     }
 
     public int addUser(String userID, String password) {
+        if (initSocket() == 1)
+            return 1;
+
         try {
             bw.write(ADDUSER, 0, ADDUSER.length());
             bw.write(" " + userID + " " + password, 0, userID.length() + password.length() + 2);
@@ -94,7 +105,10 @@ public class Client {
         return 0;
     }
 
-    public void send(String msg) {
+    public int send(String msg) {
+        if (initSocket() == 1)
+            return 1;
+
         // Send our msg to the server
         try {
             bw.write(msg, 0, msg.length());
@@ -113,12 +127,16 @@ public class Client {
                 // Tell MainActivity to update its TextView with the files
                 MainActivity.updateFiles();
             }
+
+            return 0;
         }
         catch (IOException e) {
             System.out.println("IO Exception: " + e.toString());
+            return 1;
         }
         catch (Exception e) {
             e.printStackTrace();
+            return 1;
         }
     }
 
