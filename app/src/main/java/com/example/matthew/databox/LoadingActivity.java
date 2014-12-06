@@ -100,7 +100,7 @@ public class LoadingActivity extends Activity {
 
                         if (visible && AUTO_HIDE) {
                             // Schedule a hide().
-                            delayedHide(AUTO_HIDE_DELAY_MILLIS);
+                            //delayedHide(AUTO_HIDE_DELAY_MILLIS);
                         }
 
                     }

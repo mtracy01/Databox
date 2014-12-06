@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -109,6 +110,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
         if(!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)){
             int newUserValid=1;
+            Client client = new Client(email);
+            newUserValid= client.addUser(email,password);
             //newUserValid = Client.addUser(email,password);
 
             if(newUserValid==1)
@@ -120,14 +123,16 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             }
             else
             {
-                //Display message "Login successful"
-
                 attemptLogin(); //Attempt login now that we have registered the user
-             }
+            }
 
         }
         else {
             //display error message
+            mEmailView.setError("Invalid Username or Password for Registration");
+            focusView = mPasswordView;
+            cancel = true;
+            focusView.requestFocus();
         }
 
        return;
@@ -184,9 +189,23 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            //showProgress(true);
+
+            //mAuthTask = new UserLoginTask(email, password);
+            //mAuthTask.execute((Void) null);
+
+            //Attempt Login
+            Client client = new Client(email);
+            int check=client.checkUserID(email,password); //how do we set a global username here?
+            if(check==1){
+                Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+                startActivity(intent);
+            }
+            else{
+                mEmailView.setError("Invalid username or password");
+                focusView = mEmailView;
+                focusView.requestFocus();
+            }
         }
     }
 
