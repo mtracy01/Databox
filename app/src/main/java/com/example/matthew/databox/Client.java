@@ -16,13 +16,14 @@ public class Client {
     private final static int CHUNK = 4096;
 
     // Different messages to send to server :)
-    private final static String GETFILES = "GETFILES";
     private final static String USERID = "USERID";
+    private final static String ADDUSER = "ADDUSER";
+    private final static String GETFILES = "GETFILES";
     private final static String UPLOAD = "UPLOAD";
     private final static String DOWNLOAD = "DOWNLOAD";
 
     private String username = "";
-    private String password = "";
+
     private Socket socket;
     private OutputStreamWriter osw;
     private BufferedWriter bw;
@@ -31,8 +32,8 @@ public class Client {
 
     public Client(String username, String password) {
         this.username = username;
-        this.password = password;
 
+        // Set up all things that are good
         try {
             socket = new Socket(SERVER, SERVERPORT);
             osw = new OutputStreamWriter(socket.getOutputStream());
@@ -55,6 +56,8 @@ public class Client {
             bw.write(" " + userID + " " + password, 0, userID.length() + password.length() + 2);
             bw.flush();
 
+            // TODO wait for the server to do its thing?
+
             // TODO read back some stuff from server
 
             return 0;
@@ -70,12 +73,29 @@ public class Client {
     }
 
     public int addUser(String userID, String password) {
-        // TODO add a user to the database
+        try {
+            bw.write(ADDUSER, 0, ADDUSER.length());
+            bw.write(" " + userID + " " + password, 0, userID.length() + password.length() + 2);
+            bw.flush();
+
+            // TODO wait for the server to do its thing?
+
+            // TODO read back some stuff from server
+        }
+        catch (IOException e) {
+            System.out.println("IO Exception: " + e.toString());
+            return 1;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return 1;
+        }
 
         return 0;
     }
 
     public void send(String msg) {
+        // Send our msg to the server
         try {
             bw.write(msg, 0, msg.length());
             bw.flush();
@@ -100,10 +120,6 @@ public class Client {
         catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void setUsername(String username, String password) {
-        this.username = username;
     }
 
     public String getUsername() {

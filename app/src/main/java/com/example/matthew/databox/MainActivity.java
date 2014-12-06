@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
         upload_b = (Button) findViewById(R.id.upload_b);
         download_b = (Button) findViewById(R.id.download_b);
 
-        Client client = new Client("username");
+        Client client = new Client("username", "password");
     }
 
     public static void addFile(String file) {
