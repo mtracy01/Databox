@@ -75,17 +75,59 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         });
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button mEmailRegisterButton= (Button) findViewById(R.id.email_register_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
             }
         });
+        mEmailRegisterButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptRegister();
+            }
+        });
+
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
 
+    public void attemptRegister(){
+        if(mAuthTask!=null)
+                return;
+        //Reset errors
+        mEmailView.setError(null);
+        mPasswordView.setError(null);
+        String email= mEmailView.getText().toString();
+        String password = mPasswordView.getText().toString();
+
+        boolean cancel = false;
+
+        View focusView=null;
+
+        if(!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)){
+            //Set username
+            /*newUserValid=Client.sendMessage("ADD email password")
+            if(newUserValid!=1)
+            {
+                //display error message
+                return;
+            }
+            else
+            {
+                //Display message "Login successful"
+                attemptLogin() //Attempt login now that we have registered the user
+             }
+             */
+        }
+        else {
+            //display error message
+        }
+
+       return;
+    }
     private void populateAutoComplete() {
         getLoaderManager().initLoader(0, null, this);
     }
