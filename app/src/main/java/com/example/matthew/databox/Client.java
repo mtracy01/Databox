@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.net.Socket;
 
 /**
@@ -23,15 +24,21 @@ public class Client {
     private final static String DOWNLOAD = "DOWNLOAD";
 
     private String username = "";
+    private MainActivity mainActivity;
 
     private Socket socket;
     private OutputStreamWriter osw;
     private BufferedWriter bw;
     private InputStreamReader isr;
     private BufferedReader br;
+    private InputStream is;
+    private int bytesRead, current;
+    private byte[] data = new byte[CHUNK];
+    private char[] msg = new char[CHUNK];
 
     public Client(String username) {
         this.username = username;
+        mainActivity = new MainActivity();
     }
 
     private int initSocket() {
@@ -41,11 +48,14 @@ public class Client {
             bw = new BufferedWriter(osw);
             isr = new InputStreamReader(socket.getInputStream());
             br = new BufferedReader(isr);
+            is = socket.getInputStream();
+            current = 0;
 
             return 0;
         }
         catch (IOException e) {
             System.out.println("IO Exception: " + e.toString());
+            e.printStackTrace();
             return 1;
         }
         catch (Exception e) {
@@ -60,16 +70,26 @@ public class Client {
 
         // Send userID + password to server so it can check if that pair exists
         try {
+            // Write USERID message to server
             bw.write(USERID, 0, USERID.length());
             bw.write(" " + userID + " " + password, 0, userID.length() + password.length() + 2);
             bw.flush();
 
-            // TODO read back some stuff from server
+            // Read socket until it's closed to get response from server
+            bytesRead = br.read(msg, current, CHUNK);
+            while (bytesRead != -1) {
+                if (msg.equals("SUCCESS"))
+                    return 0;
+                else if (msg.equals("FAILURE"))
+                    return 1;
+                bytesRead = br.read(msg, current, CHUNK);
+            }
 
-            return 0;
+            return 1;
         }
         catch (IOException e) {
             System.out.println("IO Exception: " + e.toString());
+            e.printStackTrace();
             return 1;
         }
         catch (Exception e) {
@@ -87,12 +107,20 @@ public class Client {
             bw.write(" " + userID + " " + password, 0, userID.length() + password.length() + 2);
             bw.flush();
 
-            // TODO read back some stuff from server
+            // Read socket until it's closed to get response from server
+            bytesRead = br.read(msg, current, CHUNK);
+            while (bytesRead != -1) {
+                bytesRead = br.read(msg, current, CHUNK);
+            }
 
-            return 0;
+            if (msg.equals("SUCCESS"))
+                return 0;
+
+            return 1;
         }
         catch (IOException e) {
             System.out.println("IO Exception: " + e.toString());
+            e.printStackTrace();
             return 1;
         }
         catch (Exception e) {
@@ -121,6 +149,7 @@ public class Client {
         }
         catch (IOException e) {
             System.out.println("IO Exception: " + e.toString());
+            e.printStackTrace();
             return 1;
         }
         catch (Exception e) {
@@ -129,13 +158,15 @@ public class Client {
         }
     }
 
-    public int upload(String filename, byte[] data) {
+    public int upload(String filepath, byte[] data) {
         if (initSocket() == 1)
             return 1;
 
+        // TODO open the file located at filepath
+
         try {
             bw.write(UPLOAD, 0, UPLOAD.length());
-            bw.write(" " + filename + "\n" + data, 0, filename.length() + data.length + 2);
+            bw.write(" " + filepath + "\n" + data, 0, filepath.length() + data.length + 2);
             bw.flush();
 
             // TODO read back some stuff from server
@@ -144,6 +175,7 @@ public class Client {
         }
         catch (IOException e) {
             System.out.println("IO Exception: " + e.toString());
+            e.printStackTrace();
             return 1;
         }
         catch (Exception e) {
@@ -167,6 +199,7 @@ public class Client {
         }
         catch (IOException e) {
             System.out.println("IO Exception: " + e.toString());
+            e.printStackTrace();
             return 1;
         }
         catch (Exception e) {

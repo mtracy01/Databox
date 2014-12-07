@@ -14,7 +14,6 @@ import java.util.ArrayList;
 public class MainActivity extends Activity {
 
     private static Button upload_b, download_b;
-    private static Client client;
     private static ArrayList<String> files = new ArrayList<String>();
 
     @Override
@@ -25,10 +24,6 @@ public class MainActivity extends Activity {
 
         upload_b = (Button) findViewById(R.id.upload_b);
         download_b = (Button) findViewById(R.id.download_b);
-    }
-
-    public void initClient(String username) {
-        client = new Client(username);
     }
 
     public static void addFile(String file) {
