@@ -38,25 +38,32 @@ public class MainActivity extends Activity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(view.getDrawingCacheBackgroundColor()!=0){
+                String uname="temp";
+                Client client = new Client(uname);
+                int success=client.download(files.get(position));
+                if(success!=1){
+
+                    //print an error message on the screen
+                }
+               /* if(view.getDrawingCacheBackgroundColor()!=0){
                     list.setItemChecked(position,true);
                     selectedItem=-1;
 
                     view.setBackgroundColor(0);//getResources().getColor(R.color.common_signin_btn_default_background));
                 }
                 else {
-                    /*for(int i=0;i<files.size();i++){
+                    for(int i=0;i<files.size();i++){
                         list.setItemChecked(i,false);
                         View x = (View)list.getItemAtPosition(position);
                         x.setBackgroundColor(getResources().getColor(R.color.default_color));
 
-                    }*/
+                    }
                     list.setItemChecked(position, false);
 
                     selectedItem=position;
                     view.setBackgroundColor(getResources().getColor(R.color.pressed_color));//getResources().getColor(R.color.background_material_dark));
 
-                }
+                }*/
                 //list.setSelected(true);
                 //view.setBackgroundColor(Color.BLUE);
                 //conversationAdapter.notifyDataSetChanged();
