@@ -1,11 +1,15 @@
 package com.example.matthew.databox;
 
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.Socket;
 
 /**
@@ -15,6 +19,7 @@ public class Client {
     private static final int SERVERPORT = 6000;
     private final static String SERVER = "PUT THE SERVER ADDRESS HERE";
     private final static int CHUNK = 4096;
+    private final static int MSG_SIZE = 64;
 
     // Different messages to send to server :)
     private final static String USERID = "USERID";
@@ -32,9 +37,11 @@ public class Client {
     private InputStreamReader isr;
     private BufferedReader br;
     private InputStream is;
+    private OutputStream os;
+    private FileInputStream fis;
     private int bytesRead, current;
     private byte[] data = new byte[CHUNK];
-    private char[] msg = new char[CHUNK];
+    private char[] msg = new char[MSG_SIZE];
 
     public Client(String username) {
         this.username = username;
@@ -49,6 +56,7 @@ public class Client {
             isr = new InputStreamReader(socket.getInputStream());
             br = new BufferedReader(isr);
             is = socket.getInputStream();
+            os = socket.getOutputStream();
             current = 0;
 
             return 0;
@@ -85,6 +93,7 @@ public class Client {
                 bytesRead = br.read(msg, current, CHUNK);
             }
 
+            // We didn't get an expected message (or any message) from the server, return 1
             return 1;
         }
         catch (IOException e) {
@@ -110,12 +119,14 @@ public class Client {
             // Read socket until it's closed to get response from server
             bytesRead = br.read(msg, current, CHUNK);
             while (bytesRead != -1) {
+                if (msg.equals("SUCCESS"))
+                    return 0;
+                else if (msg.equals("FAILURE"))
+                    return 1;
                 bytesRead = br.read(msg, current, CHUNK);
             }
 
-            if (msg.equals("SUCCESS"))
-                return 0;
-
+            // We didn't get an expected message (or any message) from the server, return 1
             return 1;
         }
         catch (IOException e) {
@@ -162,19 +173,50 @@ public class Client {
         if (initSocket() == 1)
             return 1;
 
-        // TODO open the file located at filepath
-
         try {
-            bw.write(UPLOAD, 0, UPLOAD.length());
-            bw.write(" " + filepath + "\n" + data, 0, filepath.length() + data.length + 2);
-            bw.flush();
+            // Open the file at filepath
+            File f = new File(filepath);
+            fis = new FileInputStream(f);
 
-            // TODO read back some stuff from server
+            try {
+                // Write an UPLOAD message to the server, data to follow new line
+                bw.write(UPLOAD, 0, UPLOAD.length());
+                bw.write(" " + filepath + "\n", 0, filepath.length() + 2);
 
-            return 0;
+                // Read data from file, then write it to the server
+                bytesRead = fis.read(data, current, data.length);
+                while (bytesRead != -1) {
+                    os.write(data, 0, bytesRead);
+                    current += bytesRead;
+                    bytesRead = fis.read(data, current, data.length);
+                }
+                bw.flush();
+
+                // Read socket until it's closed to get response from server
+                bytesRead = br.read(msg, current, CHUNK);
+                while (bytesRead != -1) {
+                    if (msg.equals("SUCCESS"))
+                        return 0;
+                    else if (msg.equals("FAILURE"))
+                        return 1;
+                    bytesRead = br.read(msg, current, CHUNK);
+                }
+
+                // We didn't get an expected message (or any message) from the server, return 1
+                return 1;
+            }
+            catch (IOException e) {
+                System.out.println("IO Exception: " + e.toString());
+                e.printStackTrace();
+                return 1;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                return 1;
+            }
         }
-        catch (IOException e) {
-            System.out.println("IO Exception: " + e.toString());
+        catch (FileNotFoundException e) {
+            System.out.println("File not found! : " + e.toString());
             e.printStackTrace();
             return 1;
         }
