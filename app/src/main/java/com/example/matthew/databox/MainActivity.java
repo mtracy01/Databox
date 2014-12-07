@@ -57,6 +57,9 @@ public class MainActivity extends Activity {
                 //list.setSelection(position);
             }
         });
+
+        // Tests the server - client connection
+        ClientServerTests.test();
     }
 
     public void addFile(String file) {

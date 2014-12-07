@@ -11,10 +11,22 @@ public class ClientServerTests {
     public static void test() {
         Client client = new Client("Toaster");
 
-        System.out.println("Test");
+        System.out.printf("Testing USERID ... ");
+        if (client.checkUserID(client.getUsername(), "pword") == 0)
+            System.out.println("USERID worked");
+        else
+            System.out.println("USERID did not work");
 
-        assert(client.checkUserID(client.getUsername(), "pword") == 0);
+        System.out.printf("Testing ADDUSER ... ");
+        if (client.addUser(client.getUsername(), "pword") == 0)
+            System.out.println("ADDUSER worked");
+        else
+            System.out.println("ADDUSER did not work");
+
+        /*
+        assert(client.checkUserID(client.getUsername(), "pword") == 1);
         assert(client.addUser(client.getUsername(), "pword") == 0);
+        */
 
         /*
         assert(client.upload("C:/Users/Cris/Desktop/test.txt") == 0);
