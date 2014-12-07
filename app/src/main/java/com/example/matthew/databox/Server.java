@@ -90,7 +90,7 @@ public class Server extends Activity{
             if(buffer.contains("USERID")){
                 st.checkUserID(buffer,conn);
             }
-            else if (buffer.contains("GETFILES"){
+            else if (buffer.contains("GETFILES")){
                 System.out.println("starving");
             }
 
