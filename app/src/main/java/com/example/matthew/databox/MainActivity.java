@@ -1,7 +1,11 @@
 package com.example.matthew.databox;
 
 import android.app.Activity;
+import android.app.LauncherActivity;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.internal.widget.AdapterViewCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -9,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,12 +38,13 @@ public class MainActivity extends Activity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (view.getDrawingCacheBackgroundColor() != 0) {
-                    list.setItemChecked(position, true);
-                    selectedItem = -1;
+                if(view.getDrawingCacheBackgroundColor()!=0){
+                    list.setItemChecked(position,true);
+                    selectedItem=-1;
 
                     view.setBackgroundColor(0);//getResources().getColor(R.color.common_signin_btn_default_background));
-                } else {
+                }
+                else {
                     /*for(int i=0;i<files.size();i++){
                         list.setItemChecked(i,false);
                         View x = (View)list.getItemAtPosition(position);
@@ -47,7 +53,7 @@ public class MainActivity extends Activity {
                     }*/
                     list.setItemChecked(position, false);
 
-                    selectedItem = position;
+                    selectedItem=position;
                     view.setBackgroundColor(getResources().getColor(R.color.pressed_color));//getResources().getColor(R.color.background_material_dark));
 
                 }
@@ -57,9 +63,6 @@ public class MainActivity extends Activity {
                 //list.setSelection(position);
             }
         });
-
-        // Tests the server - client connection
-        ClientServerTests.test();
     }
 
     public void addFile(String file) {
