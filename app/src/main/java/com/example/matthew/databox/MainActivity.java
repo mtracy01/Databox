@@ -38,11 +38,11 @@ public class MainActivity extends Activity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(list.isItemChecked(position)==true){
-                    list.setItemChecked(position,false);
+                if(view.getDrawingCacheBackgroundColor()!=0){
+                    list.setItemChecked(position,true);
                     selectedItem=-1;
-                    list.setSelection(position);
-                    view.setBackgroundColor(getResources().getColor(R.color.default_color));
+
+                    view.setBackgroundColor(0);//getResources().getColor(R.color.common_signin_btn_default_background));
                 }
                 else {
                     /*for(int i=0;i<files.size();i++){
@@ -51,9 +51,8 @@ public class MainActivity extends Activity {
                         x.setBackgroundColor(getResources().getColor(R.color.default_color));
 
                     }*/
-                    list.setItemChecked(position, true);
-                    list.setSelected(true);
-                    list.setSelection(position);
+                    list.setItemChecked(position, false);
+
                     selectedItem=position;
                     view.setBackgroundColor(getResources().getColor(R.color.pressed_color));//getResources().getColor(R.color.background_material_dark));
 
