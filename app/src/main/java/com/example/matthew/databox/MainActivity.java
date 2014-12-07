@@ -32,6 +32,7 @@ public class MainActivity extends Activity {
 
     public static void updateFiles() {
         // TODO display all of the files in the files ArrayList
+
     }
 
    /* public void sendMessage(View view)

@@ -89,12 +89,20 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 attemptRegister();
             }
         });
-
+        Button bypassButton = (Button) findViewById(R.id.bypass);
+        bypassButton.setOnClickListener(new OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) { bypass();}
+                                        });
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
 
+    public void bypass(){
+        Intent intent= new Intent(LoginActivity.this,MainActivity.class);
+        startActivity(intent);
+    }
     public void attemptRegister(){
         if(mAuthTask!=null)
                 return;
@@ -210,13 +218,10 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@") && !email.contains(" ");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-
         return !password.isEmpty();
     }
 

@@ -8,6 +8,14 @@
     tools:context="com.example.matthew.databox.LoginActivity">
 
     <!-- Login progress -->
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bypass"
+        android:id="@+id/bypass"
+        android:layout_gravity="right" />
+
     <ProgressBar android:id="@+id/login_progress" style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:layout_marginBottom="8dp" android:visibility="gone" />
