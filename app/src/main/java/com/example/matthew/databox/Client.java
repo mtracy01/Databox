@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.net.Socket;
 
 /**
@@ -107,13 +108,13 @@ public class Client {
             bw.flush();
 
             // Read socket until it's closed to get response from server
-            bytesRead = br.read(msg, current, CHUNK);
+            bytesRead = br.read(msg, current, MSG_SIZE);
             while (bytesRead != -1) {
                 if (new String(msg).equals("SUCCESS"))
                     return 0;
                 else if (new String(msg).equals("FAILURE"))
                     return 1;
-                bytesRead = br.read(msg, current, CHUNK);
+                bytesRead = br.read(msg, current, MSG_SIZE);
             }
 
             // We didn't get an expected message (or any message) from the server, return 1
@@ -152,13 +153,13 @@ public class Client {
             bw.flush();
 
             // Read socket until it's closed to get response from server
-            bytesRead = br.read(msg, current, CHUNK);
+            bytesRead = br.read(msg, current, MSG_SIZE);
             while (bytesRead != -1) {
                 if (new String(msg).equals("SUCCESS"))
                     return 0;
                 else if (new String(msg).equals("FAILURE"))
                     return 1;
-                bytesRead = br.read(msg, current, CHUNK);
+                bytesRead = br.read(msg, current, MSG_SIZE);
             }
 
             // We didn't get an expected message (or any message) from the server, return 1
@@ -247,13 +248,13 @@ public class Client {
                 bw.flush();
 
                 // Read socket until it's closed to get response from server
-                bytesRead = br.read(msg, current, CHUNK);
+                bytesRead = br.read(msg, current, MSG_SIZE);
                 while (bytesRead != -1) {
                     if (new String(msg).equals("SUCCESS"))
                         return 0;
                     else if (new String(msg).equals("FAILURE"))
                         return 1;
-                    bytesRead = br.read(msg, current, CHUNK);
+                    bytesRead = br.read(msg, current, MSG_SIZE);
                 }
 
                 // We didn't get an expected message (or any message) from the server, return 1
@@ -295,17 +296,39 @@ public class Client {
             return 1;
 
         try {
-            // Write the download request to the server
-            bw.write(DOWNLOAD, 0, DOWNLOAD.length());
-            bw.write(" " + filename, 0, filename.length() + 1);
-            bw.flush();
+            // Create the file that's being downloaded
+            File f = new File(filename);
+            FileOutputStream fos = new FileOutputStream(f);
 
-            // TODO read back some stuff from server
+            try {
+                // Write the download request to the server
+                bw.write(DOWNLOAD, 0, DOWNLOAD.length());
+                bw.write(" " + filename, 0, filename.length() + 1);
+                bw.flush();
 
-            return 0;
+                // Read socket until it's closed to get response from server
+                bytesRead = is.read(data, current, CHUNK);
+                while (bytesRead != -1) {
+                    fos.write(data, 0, bytesRead);
+                    current += bytesRead;
+                    bytesRead = is.read(data, current, CHUNK);
+                }
+
+                // If we reached this point without an exception we can assume the file was copied
+                return 0;
+            }
+            catch (IOException e) {
+                System.out.println("IO Exception: " + e.toString());
+                e.printStackTrace();
+                return 1;
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                return 1;
+            }
         }
-        catch (IOException e) {
-            System.out.println("IO Exception: " + e.toString());
+        catch (FileNotFoundException e) {
+            System.out.println("File not found! : " + e.toString());
             e.printStackTrace();
             return 1;
         }
