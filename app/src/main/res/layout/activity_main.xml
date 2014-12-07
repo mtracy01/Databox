@@ -52,7 +52,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/listView"
         android:layout_below="@+id/gridLayout"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        tools:listitem="@android:layout/simple_list_item_1" />
 
 
 </RelativeLayout>

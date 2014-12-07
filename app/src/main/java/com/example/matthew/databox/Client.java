@@ -149,12 +149,12 @@ public class Client {
             // Read the files the server writes back
             String file = br.readLine();
             while (file.length() != 0) {
-                MainActivity.addFile(file);
+                mainActivity.addFile(file);
                 file = br.readLine();
             }
 
             // Tell MainActivity to update its TextView with the files
-            MainActivity.updateFiles();
+            mainActivity.updateFiles();
 
             return 0;
         }
