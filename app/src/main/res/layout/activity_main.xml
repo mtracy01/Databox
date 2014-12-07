@@ -4,7 +4,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:background="@drawable/s"
+    android:background="@drawable/lbackground"
     tools:context="com.example.matthew.databox.MainActivity"
     android:id="@+id/matthew">
 
@@ -47,13 +47,12 @@
 
     </GridLayout>
 
-    <TextView
-        android:layout_width="fill_parent"
+    <ListView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/no_files"
-        android:id="@+id/textView3"
+        android:id="@+id/listView"
         android:layout_below="@+id/gridLayout"
-        android:layout_alignParentStart="true" />
+        android:layout_centerHorizontal="true" />
 
 
 </RelativeLayout>
