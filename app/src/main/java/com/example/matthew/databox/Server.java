@@ -24,7 +24,6 @@ public class Server extends Activity{
 
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         updateHandler = new Handler();
         this.serverThread = new Thread(new ServerThread());
 
@@ -107,13 +106,13 @@ public class Server extends Activity{
                 e.printStackTrace();
             }
             while (!Thread.currentThread().isInterrupted()) {
-                try{
+                try {
                     socket = serverSocket.accept();
                     input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     String read = input.readLine();
                     executeRequest(read, conn);
 
-                } catch( IOException e){
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
