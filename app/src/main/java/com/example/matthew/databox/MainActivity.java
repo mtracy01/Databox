@@ -6,32 +6,41 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import java.util.ArrayList;
+import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends Activity {
 
     private static Button upload_b, download_b;
-    private static ArrayList<String> files = new ArrayList<String>();
-
+    private static List<String> files = new ArrayList<String>();
+    private static ListView list;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle("Databox");
+        list= (ListView)findViewById(R.id.listView);
 
         upload_b = (Button) findViewById(R.id.upload_b);
         download_b = (Button) findViewById(R.id.download_b);
+        this.updateFiles();
     }
 
-    public static void addFile(String file) {
+    public void addFile(String file) {
         files.add(file);
     }
 
-    public static void updateFiles() {
+    public void updateFiles() {
         // TODO display all of the files in the files ArrayList
+        files.add("Test1");
+        files.add("Test2");
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,files);
+        list.setAdapter(adapter);
 
     }
 
