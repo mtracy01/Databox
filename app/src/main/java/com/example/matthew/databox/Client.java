@@ -14,6 +14,12 @@ import java.net.Socket;
 
 /**
  * Created by Cris on 12/6/2014.
+ *
+ * Databox - Client
+ *
+ * Provides functionality for communicating with Databox Server. Allows communication for
+ * uploading/downloading files, requesting a user's file list, checking if a username/password pair
+ * exits, and creating new users.
  */
 public class Client {
     private static final int SERVERPORT = 6000;
@@ -31,29 +37,35 @@ public class Client {
     private String username = "";
     private MainActivity mainActivity;
 
-    private Socket socket;
-    private OutputStreamWriter osw;
     private BufferedWriter bw;
-    private InputStreamReader isr;
     private BufferedReader br;
     private InputStream is;
     private OutputStream os;
-    private FileInputStream fis;
     private int bytesRead, current;
     private byte[] data = new byte[CHUNK];
     private char[] msg = new char[MSG_SIZE];
 
+    /**
+     * Constructor for Client class. Sets user name and initializes a MainActivity.
+     *
+     * @param username - username of the Client
+     */
     public Client(String username) {
         this.username = username;
         mainActivity = new MainActivity();
     }
 
+    /**
+     * Initializes the sockets and input/output objects that will be needed. Resets current to 0.
+     *
+     * @return 0 on success, 1 on failure
+     */
     private int initSocket() {
         try {
-            socket = new Socket(SERVER, SERVERPORT);
-            osw = new OutputStreamWriter(socket.getOutputStream());
+            Socket socket = new Socket(SERVER, SERVERPORT);
+            OutputStreamWriter osw = new OutputStreamWriter(socket.getOutputStream());
+            InputStreamReader isr = new InputStreamReader(socket.getInputStream());
             bw = new BufferedWriter(osw);
-            isr = new InputStreamReader(socket.getInputStream());
             br = new BufferedReader(isr);
             is = socket.getInputStream();
             os = socket.getOutputStream();
@@ -72,6 +84,17 @@ public class Client {
         }
     }
 
+    /**
+     * Sends a USERID message to the server to check if the specified userID/password pair exists.
+     *
+     * USERID messages should look like this:
+     * USERID<sp>[userID]<sp>[password]
+     *
+     * @param userID - userID to check
+     * @param password - password to check
+     *
+     * @return 0 on success, 1 on failure
+     */
     public int checkUserID(String userID, String password) {
         if (initSocket() == 1)
             return 1;
@@ -86,9 +109,9 @@ public class Client {
             // Read socket until it's closed to get response from server
             bytesRead = br.read(msg, current, CHUNK);
             while (bytesRead != -1) {
-                if (msg.equals("SUCCESS"))
+                if (new String(msg).equals("SUCCESS"))
                     return 0;
-                else if (msg.equals("FAILURE"))
+                else if (new String(msg).equals("FAILURE"))
                     return 1;
                 bytesRead = br.read(msg, current, CHUNK);
             }
@@ -107,11 +130,23 @@ public class Client {
         }
     }
 
+    /**
+     * Sends an ADDUSER message to the server to register a new username and password pair.
+     *
+     * ADDUSER messages should look like this:
+     * ADDUSER<sp>[userID]<sp>[password]
+     *
+     * @param userID - userID to add to database
+     * @param password - password to add to database
+     *
+     * @return 0 on success, 1 on failure
+     */
     public int addUser(String userID, String password) {
         if (initSocket() == 1)
             return 1;
 
         try {
+            // Write the ADDUSER message to the server
             bw.write(ADDUSER, 0, ADDUSER.length());
             bw.write(" " + userID + " " + password, 0, userID.length() + password.length() + 2);
             bw.flush();
@@ -119,9 +154,9 @@ public class Client {
             // Read socket until it's closed to get response from server
             bytesRead = br.read(msg, current, CHUNK);
             while (bytesRead != -1) {
-                if (msg.equals("SUCCESS"))
+                if (new String(msg).equals("SUCCESS"))
                     return 0;
-                else if (msg.equals("FAILURE"))
+                else if (new String(msg).equals("FAILURE"))
                     return 1;
                 bytesRead = br.read(msg, current, CHUNK);
             }
@@ -140,15 +175,24 @@ public class Client {
         }
     }
 
+    /**
+     * Sends a GETFILES request to the server to retrieve the file list of a user.
+     *
+     * GETFILES messages should look like this:
+     * GETFILES<sp>[username]
+     *
+     * @return 0 on success, 1 on failure
+     */
     public int getFiles() {
         try {
+            // Write the GETFILES request to the server
             bw.write(GETFILES, 0, GETFILES.length());
             bw.write(" " + username, 0, username.length() + 1);
             bw.flush();
 
             // Read the files the server writes back
             String file = br.readLine();
-            while (file.length() != 0) {
+            while (file != null) {
                 mainActivity.addFile(file);
                 file = br.readLine();
             }
@@ -169,14 +213,24 @@ public class Client {
         }
     }
 
-    public int upload(String filepath, byte[] data) {
+    /**
+     * Sends UPLOAD messages to the server to add files to a user's file list.
+     *
+     * UPLOAD messages should look like this:
+     * UPLOAD<sp>[filepath]<\n>[data]
+     *
+     * @param filepath - location of file to be uploaded
+     *
+     * @return 0 on success, 1 on failure
+     */
+    public int upload(String filepath) {
         if (initSocket() == 1)
             return 1;
 
         try {
             // Open the file at filepath
             File f = new File(filepath);
-            fis = new FileInputStream(f);
+            FileInputStream fis = new FileInputStream(f);
 
             try {
                 // Write an UPLOAD message to the server, data to follow new line
@@ -195,9 +249,9 @@ public class Client {
                 // Read socket until it's closed to get response from server
                 bytesRead = br.read(msg, current, CHUNK);
                 while (bytesRead != -1) {
-                    if (msg.equals("SUCCESS"))
+                    if (new String(msg).equals("SUCCESS"))
                         return 0;
-                    else if (msg.equals("FAILURE"))
+                    else if (new String(msg).equals("FAILURE"))
                         return 1;
                     bytesRead = br.read(msg, current, CHUNK);
                 }
@@ -226,11 +280,22 @@ public class Client {
         }
     }
 
+    /**
+     * Sends a download request to the server to download a file from a user's file list.
+     *
+     * DOWNLOAD messages should look like this:
+     * DOWNLOAD<sp>[filename]
+     *
+     * @param filename - name of the file to be downloaded from server
+     *
+     * @return 0 on success, 1 on failure
+     */
     public int download(String filename) {
         if (initSocket() == 1)
             return 1;
 
         try {
+            // Write the download request to the server
             bw.write(DOWNLOAD, 0, DOWNLOAD.length());
             bw.write(" " + filename, 0, filename.length() + 1);
             bw.flush();
@@ -250,6 +315,11 @@ public class Client {
         }
     }
 
+    /**
+     * Fetches the username of this Client object.
+     *
+     * @return username of Client
+     */
     public String getUsername() {
         return username;
     }
