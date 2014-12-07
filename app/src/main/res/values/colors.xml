@@ -2,4 +2,6 @@
 
     <color name="black_overlay">#66000000</color>
     <color name="text_color">#80f2ffe1</color>
+    <color name="pressed_color">#4d90fe</color>
+    <color name="default_color">#ffffff</color>
 </resources>

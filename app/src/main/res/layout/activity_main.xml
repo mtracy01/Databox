@@ -51,8 +51,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/listView"
+        android:choiceMode="singleChoice"
+        android:listSelector="@drawable/bg_key"
         android:layout_below="@+id/gridLayout"
         android:layout_centerHorizontal="true"
+        android:background="@drawable/bg_key"
+
         tools:listitem="@android:layout/simple_list_item_1" />
 
 
