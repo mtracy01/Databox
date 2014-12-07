@@ -43,11 +43,21 @@ public class Client {
     private byte[] data = new byte[CHUNK];
     private char[] msg = new char[MSG_SIZE];
 
+    /**
+     * Constructor for Client class. Sets user name and initializes a MainActivity.
+     *
+     * @param username
+     */
     public Client(String username) {
         this.username = username;
         mainActivity = new MainActivity();
     }
 
+    /**
+     * Initializes the sockets and input/output objects that will be needed. Resets current to 0.
+     *
+     * @return 0 on success, 1 on failure
+     */
     private int initSocket() {
         try {
             socket = new Socket(SERVER, SERVERPORT);
@@ -72,6 +82,17 @@ public class Client {
         }
     }
 
+    /**
+     * Sends a USERID message to the server to check if the specified userID/password pair exists.
+     *
+     * USERID messages should look like this:
+     * USERID<sp>[userID]<sp>[password]
+     *
+     * @param userID
+     * @param
+     *
+     * @return 0 on success, 1 on failure
+     */
     public int checkUserID(String userID, String password) {
         if (initSocket() == 1)
             return 1;
@@ -107,11 +128,23 @@ public class Client {
         }
     }
 
+    /**
+     * Sends an ADDUSER message to the server to register a new username and password pair.
+     *
+     * ADDUSER messages should look like this:
+     * ADDUSER<sp>[userID]<sp>[password]
+     *
+     * @param userID
+     * @param password
+     *
+     * @return 0 on success, 1 on failure
+     */
     public int addUser(String userID, String password) {
         if (initSocket() == 1)
             return 1;
 
         try {
+            // Write the ADDUSER message to the server
             bw.write(ADDUSER, 0, ADDUSER.length());
             bw.write(" " + userID + " " + password, 0, userID.length() + password.length() + 2);
             bw.flush();
@@ -140,8 +173,17 @@ public class Client {
         }
     }
 
+    /**
+     * Sends a GETFILES request to the server to retrieve the file list of a user.
+     *
+     * GETFILES messages should look like this:
+     * GETFILES<sp>[username]
+     *
+     * @return 0 on success, 1 on failure
+     */
     public int getFiles() {
         try {
+            // Write the GETFILES request to the server
             bw.write(GETFILES, 0, GETFILES.length());
             bw.write(" " + username, 0, username.length() + 1);
             bw.flush();
@@ -169,6 +211,17 @@ public class Client {
         }
     }
 
+    /**
+     * Sends UPLOAD messages to the server to add files to a user's file list.
+     *
+     * UPLOAD messages should look like this:
+     * UPLOAD<sp>[filepath]<\n>[data]
+     *
+     * @param filepath
+     * @param data
+     *
+     * @return 0 on success, 1 on failure
+     */
     public int upload(String filepath, byte[] data) {
         if (initSocket() == 1)
             return 1;
@@ -226,11 +279,22 @@ public class Client {
         }
     }
 
+    /**
+     * Sends a download request to the server to download a file from a user's file list.
+     *
+     * DOWNLOAD messages should look like this:
+     * DOWNLOAD<sp>[filename]
+     *
+     * @param filename
+     *
+     * @return 0 on success, 1 on failure
+     */
     public int download(String filename) {
         if (initSocket() == 1)
             return 1;
 
         try {
+            // Write the download request to the server
             bw.write(DOWNLOAD, 0, DOWNLOAD.length());
             bw.write(" " + filename, 0, filename.length() + 1);
             bw.flush();
@@ -250,6 +314,11 @@ public class Client {
         }
     }
 
+    /**
+     * Fetches the username of this Client object.
+     *
+     * @return username of Client
+     */
     public String getUsername() {
         return username;
     }
