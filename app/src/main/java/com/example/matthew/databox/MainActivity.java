@@ -57,9 +57,6 @@ public class MainActivity extends Activity {
                 //list.setSelection(position);
             }
         });
-
-        // This is to test communication between Server + Client
-        ClientServerTests.test();
     }
 
     public void addFile(String file) {
