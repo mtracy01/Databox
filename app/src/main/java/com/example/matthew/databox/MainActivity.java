@@ -1,7 +1,10 @@
 package com.example.matthew.databox;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.LauncherActivity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -26,6 +29,7 @@ public class MainActivity extends Activity {
     private static ListView list;
     public static long selectedItem=-1;
     private static String username="";
+    private Context context=this;
     public MainActivity(String uname){
         username=uname;
     }
@@ -48,8 +52,15 @@ public class MainActivity extends Activity {
                 //String uname="temp";
                 Client client = new Client(username);
                 int success=client.download(files.get(position));
-                if(success!=1){
-
+                if(success!=0){
+                    AlertDialog.Builder alertDialogBuilder= new AlertDialog.Builder(context);
+                    alertDialogBuilder.setTitle("Whoops!");
+                    alertDialogBuilder.setMessage("Cannot download file.  File either does not exist... or we messed up :/.\nSowwy!!!");
+                    alertDialogBuilder.setCancelable(false);
+                    alertDialogBuilder.setPositiveButton("Ok...",new DialogInterface.OnClickListener(){ public void onClick(DialogInterface dialog, int id) {dialog.cancel();}});
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+                    updateFiles();
                     //print an error message on the screen
                 }
                /* if(view.getDrawingCacheBackgroundColor()!=0){
