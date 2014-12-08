@@ -12,7 +12,6 @@ import java.net.Socket;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.widget.TextView;
 import java.sql.*;
 
 public class Server extends Activity{
@@ -72,6 +71,7 @@ public class Server extends Activity{
                 if(result.next()){
                     String success = "Success";
                     bw.write(success, 0,  success.length());
+                    serverSocket.close();
                 } else {
                         String fail = "Failure";
                         bw.write(fail, 0,  fail.length());
@@ -85,12 +85,28 @@ public class Server extends Activity{
             }
         }
 
-        private static void executeRequest(String buffer, Connection conn){
+        private void executeRequest(String buffer){ //, Connection conn
             if(buffer.contains("USERID")){
-                st.checkUserID(buffer,conn);
+                System.out.println("i'm starving");
+                String success = "Success";
+                try {
+                    bw.write(success, 0, success.length());
+                    serverSocket.close();
+                } catch(IOException e) {
+                    e.printStackTrace();
+                }
+
+               // st.checkUserID(buffer,conn);
             }
             else if (buffer.contains("GETFILES")){
                 System.out.println("starving");
+                String success = "Success";
+                try {
+                    bw.write(success, 0, success.length());
+                    serverSocket.close();
+                } catch(IOException e) {
+                    e.printStackTrace();
+                }
             }
 
         }
@@ -110,7 +126,7 @@ public class Server extends Activity{
                     socket = serverSocket.accept();
                     input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     String read = input.readLine();
-                    executeRequest(read, conn);
+                    executeRequest(read);//, conn
 
                 } catch (IOException e) {
                     e.printStackTrace();
