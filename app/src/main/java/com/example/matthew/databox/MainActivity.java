@@ -30,6 +30,7 @@ public class MainActivity extends Activity {
     public static long selectedItem=-1;
     private static String username="";
     private Context context=this;
+    private static Client client;
     public MainActivity(String uname){
         username=uname;
     }
@@ -41,6 +42,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle("Databox");
+        client = new Client(username);
         list= (ListView)findViewById(R.id.listView);
         list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         upload_b = (Button) findViewById(R.id.upload_b);
@@ -50,7 +52,7 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //String uname="temp";
-                Client client = new Client(username);
+                //Client client = new Client(username);
                 int success=client.download(files.get(position));
                 if(success!=0){
                     AlertDialog.Builder alertDialogBuilder= new AlertDialog.Builder(context);
@@ -63,29 +65,7 @@ public class MainActivity extends Activity {
                     updateFiles();
                     //print an error message on the screen
                 }
-               /* if(view.getDrawingCacheBackgroundColor()!=0){
-                    list.setItemChecked(position,true);
-                    selectedItem=-1;
 
-                    view.setBackgroundColor(0);//getResources().getColor(R.color.common_signin_btn_default_background));
-                }
-                else {
-                    for(int i=0;i<files.size();i++){
-                        list.setItemChecked(i,false);
-                        View x = (View)list.getItemAtPosition(position);
-                        x.setBackgroundColor(getResources().getColor(R.color.default_color));
-
-                    }
-                    list.setItemChecked(position, false);
-
-                    selectedItem=position;
-                    view.setBackgroundColor(getResources().getColor(R.color.pressed_color));//getResources().getColor(R.color.background_material_dark));
-
-                }*/
-                //list.setSelected(true);
-                //view.setBackgroundColor(Color.BLUE);
-                //conversationAdapter.notifyDataSetChanged();
-                //list.setSelection(position);
             }
         });
     }
