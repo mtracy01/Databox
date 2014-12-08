@@ -24,7 +24,7 @@ import java.net.Socket;
  */
 public class Client {
     private static final int SERVERPORT = 6000;
-    private final static String SERVER = "PUT THE SERVER ADDRESS HERE";
+    private final static String SERVER = "?";
     private final static int CHUNK = 4096;
     private final static int MSG_SIZE = 64;
 
@@ -106,6 +106,8 @@ public class Client {
             bw.write(USERID, 0, USERID.length());
             bw.write(" " + userID + " " + password, 0, userID.length() + password.length() + 2);
             bw.flush();
+
+            System.out.println("Done writing USERID message!");
 
             // Read socket until it's closed to get response from server
             bytesRead = br.read(msg, current, MSG_SIZE);
