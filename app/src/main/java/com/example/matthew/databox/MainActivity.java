@@ -25,6 +25,13 @@ public class MainActivity extends Activity {
     private static List<String> files = new ArrayList<String>();
     private static ListView list;
     public static long selectedItem=-1;
+    private static String username="";
+    public MainActivity(String uname){
+        username=uname;
+    }
+    public MainActivity(){
+        username="littleJi";
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,8 +45,8 @@ public class MainActivity extends Activity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String uname="temp";
-                Client client = new Client(uname);
+                //String uname="temp";
+                Client client = new Client(username);
                 int success=client.download(files.get(position));
                 if(success!=1){
 

@@ -53,7 +53,7 @@ public class Client {
      */
     public Client(String username) {
         this.username = username;
-        mainActivity = new MainActivity();
+        mainActivity = new MainActivity(username);
     }
 
     /**
