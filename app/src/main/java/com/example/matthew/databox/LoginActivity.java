@@ -196,8 +196,8 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
             //Attempt Login
             Client client = new Client(email);
-            int check=client.checkUserID(email,password); //how do we set a global username here?
-            if(check==1){
+            int check=client.checkUserID(email,password);
+            if(check==0){
                 Intent intent = new Intent(LoginActivity.this,MainActivity.class);
                 startActivity(intent);
             }
