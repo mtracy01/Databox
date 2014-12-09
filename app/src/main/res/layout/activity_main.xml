@@ -23,27 +23,6 @@
             android:layout_alignParentStart="true"
             android:layout_row="0"
             android:layout_column="0" />
-
-        <TextView android:text="Xiaojing is Super Cute!"
-            android:textColor="#80F2FFE1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView2"
-            android:singleLine="true"
-            android:layout_alignParentTop="true"
-            android:layout_row="11"
-            android:layout_column="0" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/download"
-            android:id="@+id/download_b"
-            android:layout_alignTop="@+id/upload_b"
-            android:layout_alignParentEnd="true"
-            android:layout_row="0"
-            android:layout_column="2" />
-
     </GridLayout>
 
     <ListView
