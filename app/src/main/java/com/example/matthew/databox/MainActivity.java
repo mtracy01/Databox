@@ -39,12 +39,16 @@ public class MainActivity extends Activity {
     private static Client client;
     private String chosenFile;
     private String fileList[];
+    private File mPath;
+
+    //Initialization, One for testing, the other for default application authentication system
     public MainActivity(String uname){
         username=uname;
     }
     public MainActivity(){
         username="littleJi";
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +89,8 @@ public class MainActivity extends Activity {
                 //startActivityForResult(medIntent, );
                 */
                 //String[] fileList;
-                File mPath= Environment.getExternalStorageDirectory();
+                mPath= Environment.getExternalStorageDirectory();
+
                 try{
                     mPath.mkdirs();
                 }
@@ -94,6 +99,7 @@ public class MainActivity extends Activity {
                 }
                 if(mPath.exists()){
                     fileList=mPath.list();
+
                 }
                 else{
                     fileList=new String[0];
@@ -103,6 +109,12 @@ public class MainActivity extends Activity {
                 Dialog dialog=null;
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Choose a file");
+                builder.setNegativeButton("Go Up", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        goUp();
+                    }
+                });
+                builder.setPositiveButton("Cancel",new DialogInterface.OnClickListener(){ public void onClick(DialogInterface dialog, int id) {dialog.cancel();}});
                 if(fileList==null){
                     dialog=builder.create();
                 }
@@ -110,7 +122,8 @@ public class MainActivity extends Activity {
                     builder.setItems(fileList,new DialogInterface.OnClickListener(){
                         public void onClick(DialogInterface dialog, int which){
                             chosenFile=fileList[which];
-                            //Send request to client to upload file
+                            //Conditions for dealing with different file types defined in recursive function
+                            recursiveSelect(chosenFile);
                         }
                     });
                 }
@@ -118,6 +131,110 @@ public class MainActivity extends Activity {
 
             }
         });
+    }
+    private void goUp() {
+        //create new dialog of upper directory if possible
+        if ((Environment.getExternalStorageDirectory().getName()).length()< mPath.getName().length()) {
+            mPath = mPath.getParentFile();
+            displayNewFileList();
+        }
+    }
+    private void displayNewFileList(){
+        Dialog dialog = null;
+        fileList=null;
+        try{
+            mPath.mkdirs();
+        }
+        catch(SecurityException e){
+            //Something went wrong
+            return;
+        }
+        if(mPath.exists()){
+            fileList=mPath.list();
+
+        }
+        else{
+            fileList=new String[0];
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Choose a file");
+        builder.setNegativeButton("Go Up", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                goUp();
+            }
+        });
+        builder.setPositiveButton("Cancel",new DialogInterface.OnClickListener(){ public void onClick(DialogInterface dialog, int id) {dialog.cancel();}});
+        if(fileList==null){
+            dialog=builder.create();
+        }
+        else{
+            builder.setItems(fileList,new DialogInterface.OnClickListener(){
+                public void onClick(DialogInterface dialog, int which){
+                    chosenFile=fileList[which];
+                    //Conditions for dealing with different file types defined in recursive function
+                    recursiveSelect(chosenFile);
+                }
+            });
+        }
+        dialog=builder.show();
+    }
+    private void recursiveSelect(String f){
+        String fil=mPath.getAbsolutePath();
+        fil.concat(f);
+        File fi = new File(fil);
+        if(fi.isDirectory()){
+            //create new dialog for the subdirectory
+            fileList=null;
+            Dialog dialog=null;
+            mPath=null;
+            mPath=fi;
+            try{
+                mPath.mkdirs();
+            }
+            catch(SecurityException e){
+                //Something went wrong
+                //return;
+            }
+            if(mPath.exists()){
+                fileList=mPath.list();
+
+            }
+            else{
+                fileList=new String[0];
+            }
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Choose a file");
+            builder.setNegativeButton("Go Up", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    goUp();
+                }
+            });
+            builder.setPositiveButton("Cancel",new DialogInterface.OnClickListener(){ public void onClick(DialogInterface dialog, int id) {dialog.cancel();}});
+            if(fileList==null){
+                //dialog=builder.create();
+                return;
+            }
+            else{
+                builder.setItems(fileList,new DialogInterface.OnClickListener(){
+                    public void onClick(DialogInterface dialog, int which){
+                        chosenFile=fileList[which];
+                        //Conditions for dealing with different file types defined in recursive function
+                        recursiveSelect(chosenFile);
+                    }
+                });
+            }
+            dialog=builder.show();
+
+        }
+        /*else if(f.equals("Go Up")){
+            //if name is our option to go up to parent directory
+        }*/
+        else{
+            //We have the file that we want to upload to the server
+            String path= fi.getAbsolutePath();
+            client.upload(path);
+
+        }
     }
 
     public void addFile(String file) {
