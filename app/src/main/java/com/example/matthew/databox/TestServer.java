@@ -54,6 +54,7 @@ class ServerThread implements Runnable{
     private Socket incoming;
     private BufferedReader input;
     private BufferedWriter output;
+    String drivers = null;
     public ServerThread(Socket oneSocket){
         incoming = oneSocket;
         try{
@@ -62,6 +63,18 @@ class ServerThread implements Runnable{
         } catch(IOException e) {
             e.printStackTrace();
         }
+    }
+    public Connection getConnection() throws SQLException, IOException {
+        Properties props = new Properties();
+        props.load(new FileInputStream("database.properties"));
+        drivers = props.getProperty("jdbc.drivers");
+        if(drivers != null){
+            System.setProperty("jdbc.drivers", drivers);
+        }
+        String url = props.getProperty("jdbc.url");
+        String username = props.getProperty("jdbc.username");
+        String password = props.getProperty("jdbc.password");
+        return DriverManager.getConnection(url,username,password);
     }
     String  checkUserID(String read){
         String write = "FAILURE";
