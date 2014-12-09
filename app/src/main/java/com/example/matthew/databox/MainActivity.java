@@ -180,7 +180,7 @@ public class MainActivity extends Activity {
     }
     private void recursiveSelect(String f){
         String fil=mPath.getAbsolutePath();
-        fil.concat(f);
+        fil=fil.concat(f);
         File fi = new File(fil);
         if(fi.isDirectory()){
             //create new dialog for the subdirectory
