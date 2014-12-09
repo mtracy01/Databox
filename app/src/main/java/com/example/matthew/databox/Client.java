@@ -239,7 +239,7 @@ public class Client {
             try {
                 // Write an UPLOAD message to the server, data to follow new line
                 bw.write(UPLOAD, 0, UPLOAD.length());
-                bw.write(" " + filepath + "\n", 0, filepath.length() + 2);
+                bw.write(" " + username + " " + filepath + "\n", 0, username.length() + filepath.length() + 3);
 
                 // Read data from file, then write it to the server
                 bytesRead = fis.read(data, current, data.length);
@@ -306,7 +306,7 @@ public class Client {
             try {
                 // Write the download request to the server
                 bw.write(DOWNLOAD, 0, DOWNLOAD.length());
-                bw.write(" " + filename, 0, filename.length() + 1);
+                bw.write(" " + username + " " + filename + "\n", 0, username.length() + filename.length() + 3);
                 bw.flush();
 
                 // Read socket until it's closed to get response from server
