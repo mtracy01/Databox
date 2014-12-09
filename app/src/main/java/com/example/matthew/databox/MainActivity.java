@@ -2,12 +2,14 @@ package com.example.matthew.databox;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.LauncherActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.internal.widget.AdapterViewCompat;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +20,10 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.apache.http.protocol.RequestContent;
+
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +37,8 @@ public class MainActivity extends Activity {
     private static String username="";
     private Context context=this;
     private static Client client;
+    private String chosenFile;
+    private String fileList[];
     public MainActivity(String uname){
         username=uname;
     }
@@ -65,6 +73,48 @@ public class MainActivity extends Activity {
                     updateFiles();
                     //print an error message on the screen
                 }
+
+            }
+        });
+        upload_b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Create Dialogue for the user to select a file from android
+                /*Intent medIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                medIntent.setType("all"); //
+                //startActivityForResult(medIntent, );
+                */
+                //String[] fileList;
+                File mPath= Environment.getExternalStorageDirectory();
+                try{
+                    mPath.mkdirs();
+                }
+                catch(SecurityException e){
+                    //error message needs to be here
+                }
+                if(mPath.exists()){
+                    fileList=mPath.list();
+                }
+                else{
+                    fileList=new String[0];
+                }
+
+                //create dialog for listing files
+                Dialog dialog=null;
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Choose a file");
+                if(fileList==null){
+                    dialog=builder.create();
+                }
+                else{
+                    builder.setItems(fileList,new DialogInterface.OnClickListener(){
+                        public void onClick(DialogInterface dialog, int which){
+                            chosenFile=fileList[which];
+                            //Send request to client to upload file
+                        }
+                    });
+                }
+                dialog=builder.show();
 
             }
         });
