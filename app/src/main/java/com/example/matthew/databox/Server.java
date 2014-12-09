@@ -11,21 +11,17 @@ import java.net.Socket;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
 import java.sql.*;
 
 public class Server extends Activity{
     private static ServerSocket serverSocket;
-
-    Handler updateHandler;
     Thread serverThread = null;
     public static final int SERVERPORT = 6000;
-
+    Connection cnn;
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        updateHandler = new Handler();
         this.serverThread = new Thread(new ServerThread());
-
+        this.serverThread.start();
     }
 
     protected void onStop() {
@@ -36,12 +32,47 @@ public class Server extends Activity{
             e.printStackTrace();
         }
     }
-    static class ServerThread implements Runnable{
-        String drivers = null;
-        static ServerThread st = null;
+    /**public static void main(String args[]){
+        try{
+            ServerSocket s = new ServerSocket(6000);
+            while(true){
+                Socket incoming = s.accept();
+                System.out.println("Here\n");
+                Runnable r = new ServerThread();
+                Thread t = new Thread(r);
+                t.start();
+            }
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }**/
+   class ServerThread implements Runnable{
+       public void run() {
+           Socket socket = null;
+           try{
+               serverSocket = new ServerSocket(SERVERPORT);
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
+           while(!Thread.currentThread().isInterrupted()){
+               try{
+                   socket = serverSocket.accept();
+                   InteractClientServer interact = new InteractClientServer(socket);
+                   new Thread(interact).start();
+               } catch( IOException e) {
+                   e.printStackTrace();
+               }
+           }
+       }
+        /**String drivers = null;
+        private Socket incoming;
+        private ServerThread st = null;
         Connection conn = null;
-        private BufferedReader input = null;
+        private BufferedReader br = null;
         private BufferedWriter bw = null;
+        ServerThread(Socket oneSocket){
+            incoming = oneSocket;
+        }
         public Connection getConnection() throws SQLException, IOException {
             Properties props = new Properties();
             props.load(new FileInputStream("database.properties"));
@@ -54,9 +85,7 @@ public class Server extends Activity{
             String password = props.getProperty("jdbc.password");
             return DriverManager.getConnection(url,username,password);
         }
-        /**public void uploadDatabase(String read){
 
-        }**/
 
         public void checkUserID(String read, Connection c ){
             String nameAndPw = read.substring(read.indexOf(" ")+1);
@@ -69,11 +98,11 @@ public class Server extends Activity{
                 String sql = "SELECT * FROM user WHERE userName ='"+userName+"' AND password ='"+password+"'";
                 ResultSet result = stmt.executeQuery(sql);
                 if(result.next()){
-                    String success = "Success";
+                    String success = "SUCESS";
                     bw.write(success, 0,  success.length());
                     serverSocket.close();
                 } else {
-                        String fail = "Failure";
+                        String fail = "FAILURE";
                         bw.write(fail, 0,  fail.length());
                 }
             } catch (ClassNotFoundException e) {
@@ -85,28 +114,12 @@ public class Server extends Activity{
             }
         }
 
-        private void executeRequest(String buffer){ //, Connection conn
+         void executeRequest(String buffer){ //, Connection conn
             if(buffer.contains("USERID")){
-                System.out.println("i'm starving");
-                String success = "Success";
-                try {
-                    bw.write(success, 0, success.length());
-                    serverSocket.close();
-                } catch(IOException e) {
-                    e.printStackTrace();
-                }
 
-               // st.checkUserID(buffer,conn);
             }
             else if (buffer.contains("GETFILES")){
-                System.out.println("starving");
-                String success = "Success";
-                try {
-                    bw.write(success, 0, success.length());
-                    serverSocket.close();
-                } catch(IOException e) {
-                    e.printStackTrace();
-                }
+
             }
 
         }
@@ -114,25 +127,44 @@ public class Server extends Activity{
         public void run() {
             Socket socket;
             try {
-                conn = st.getConnection();  //NOT SURE IF IT'S CORRECT
                 serverSocket = new ServerSocket(SERVERPORT);
+
             } catch (IOException e) {
-                e.printStackTrace();
-            } catch (SQLException e) {
                 e.printStackTrace();
             }
             while (!Thread.currentThread().isInterrupted()) {
                 try {
                     socket = serverSocket.accept();
-                    input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    String read = input.readLine();
+                    br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    String read = br.readLine();
                     executeRequest(read);//, conn
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
+        }**/
+    }
+    class InteractClientServer implements Runnable {
+        private Socket clientSocket;
+        private BufferedReader input;
+        public InteractClientServer( Socket clientSocket) {
+            this.clientSocket = clientSocket;
+            try {
+                this.input = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+        }
+        public void run() {
+            while(!Thread.currentThread().isInterrupted()) {
+                try {
+                    String read = input.readLine();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
         }
     }
-
 }
