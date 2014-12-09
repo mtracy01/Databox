@@ -76,16 +76,28 @@ class ServerThread implements Runnable{
         String password = props.getProperty("jdbc.password");
         return DriverManager.getConnection(url,username,password);
     }
-    String  checkUserID(String read){
-        String write = "FAILURE";
+    String executeRequest(String msg) {
+        String ret;
+        if(msg.substring(0, 6).equals("USERID")){
+            ret = checkUserID(msg);
+        }
+        else if(msg.substring(0, 7).equals("GETFILES")){
+            ret = addUser(msg);
+        }
+        // TODO add other messages
+        else {
+            ret = "FAILURE";
+        }
 
-        if(read.substring(0, 6).equals("USERID")){
-            return "SUCCESS";
-        }
-        if(read.substring(0, 7).equals("GETFILES")){
-            return "SUCCESS";
-        }
-        return write;
+        return ret;
+    }
+    String checkUserID(String read){
+        // TODO have database check for user
+        return "SUCCESS";
+    }
+    String addUser(String read){
+        // TODO have database add user
+        return "SUCCESS";
     }
     public void run(){
         try
@@ -93,7 +105,7 @@ class ServerThread implements Runnable{
             try
             {
                 String read = input.readLine();
-                String returnString = checkUserID(read);
+                String returnString = executeRequest(read);
                 output.write(returnString, 0, returnString.length());
 
                 output.flush();
