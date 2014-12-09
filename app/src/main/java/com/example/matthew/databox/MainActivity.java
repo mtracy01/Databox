@@ -183,12 +183,12 @@ public class MainActivity extends Activity {
         String fil2=fil.concat("/");
         fil2=fil2.concat(f);
         File fi = new File(fil2);
-        CharSequence one = "File" + f;
+        /*CharSequence one = "File" + f;
         CharSequence two = "File Path" + fil2;
         Toast toast = Toast.makeText(context,one,Toast.LENGTH_SHORT);
         toast.show();
         Toast toast2=Toast.makeText(context,two,Toast.LENGTH_SHORT);
-        toast2.show();
+        toast2.show();*/
         if(fi.isDirectory()){
             //create new dialog for the subdirectory
             //fileList=null;
