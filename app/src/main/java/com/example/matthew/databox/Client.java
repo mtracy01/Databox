@@ -104,17 +104,15 @@ public class Client {
         try {
             // Write USERID message to server
             bw.write(USERID, 0, USERID.length());
-            bw.write(" " + userID + " " + password, 0, userID.length() + password.length() + 2);
+            bw.write(" " + userID + " " + password + "\n", 0, userID.length() + password.length() + 3);
             bw.flush();
-
-            System.out.println("Done writing USERID message!");
 
             // Read socket until it's closed to get response from server
             bytesRead = br.read(msg, current, MSG_SIZE);
             while (bytesRead != -1) {
-                if (new String(msg).equals("SUCCESS"))
+                if (new String(msg).trim().equals("SUCCESS"))
                     return 0;
-                else if (new String(msg).equals("FAILURE"))
+                else if (new String(msg).trim().equals("FAILURE"))
                     return 1;
                 bytesRead = br.read(msg, current, MSG_SIZE);
             }

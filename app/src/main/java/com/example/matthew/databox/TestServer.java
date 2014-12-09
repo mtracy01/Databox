@@ -79,10 +79,10 @@ class ServerThread implements Runnable{
     String  checkUserID(String read){
         String write = "FAILURE";
 
-        if(read.equals("USERID")){
+        if(read.substring(0, 6).equals("USERID")){
             return "SUCCESS";
         }
-        if(read.equals("GETFILES")){
+        if(read.substring(0, 7).equals("GETFILES")){
             return "SUCCESS";
         }
         return write;
