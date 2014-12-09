@@ -30,7 +30,7 @@ import java.util.List;
 
 public class MainActivity extends Activity {
 
-    private static Button upload_b, download_b;
+    private static Button upload_b;
     private static List<String> files = new ArrayList<String>();
     private static ListView list;
     public static long selectedItem=-1;
@@ -58,7 +58,7 @@ public class MainActivity extends Activity {
         list= (ListView)findViewById(R.id.listView);
         list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         upload_b = (Button) findViewById(R.id.upload_b);
-        download_b = (Button) findViewById(R.id.download_b);
+        //download_b = (Button) findViewById(R.id.download_b);
         this.updateFiles();
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -180,11 +180,18 @@ public class MainActivity extends Activity {
     }
     private void recursiveSelect(String f){
         String fil=mPath.getAbsolutePath();
-        fil.concat(f);
-        File fi = new File(fil);
+        String fil2=fil.concat("/");
+        fil2=fil2.concat(f);
+        File fi = new File(fil2);
+        /*CharSequence one = "File" + f;
+        CharSequence two = "File Path" + fil2;
+        Toast toast = Toast.makeText(context,one,Toast.LENGTH_SHORT);
+        toast.show();
+        Toast toast2=Toast.makeText(context,two,Toast.LENGTH_SHORT);
+        toast2.show();*/
         if(fi.isDirectory()){
             //create new dialog for the subdirectory
-            fileList=null;
+            //fileList=null;
             Dialog dialog=null;
             mPath=null;
             mPath=fi;
@@ -211,11 +218,12 @@ public class MainActivity extends Activity {
             });
             builder.setPositiveButton("Cancel",new DialogInterface.OnClickListener(){ public void onClick(DialogInterface dialog, int id) {dialog.cancel();}});
             if(fileList==null){
-                //dialog=builder.create();
-                return;
+                dialog=builder.create();
+                //return;
             }
             else{
                 builder.setItems(fileList,new DialogInterface.OnClickListener(){
+                    @Override
                     public void onClick(DialogInterface dialog, int which){
                         chosenFile=fileList[which];
                         //Conditions for dealing with different file types defined in recursive function
@@ -226,9 +234,6 @@ public class MainActivity extends Activity {
             dialog=builder.show();
 
         }
-        /*else if(f.equals("Go Up")){
-            //if name is our option to go up to parent directory
-        }*/
         else{
             //We have the file that we want to upload to the server
             String path= fi.getAbsolutePath();

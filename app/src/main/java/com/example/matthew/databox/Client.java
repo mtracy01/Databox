@@ -185,10 +185,13 @@ public class Client {
      * @return 0 on success, 1 on failure
      */
     public int getFiles() {
+        if (initSocket() == 1)
+            return 1;
+
         try {
             // Write the GETFILES request to the server
             bw.write(GETFILES, 0, GETFILES.length());
-            bw.write(" " + username, 0, username.length() + 1);
+            bw.write(" " + username + "\n", 0, username.length() + 2);
             bw.flush();
 
             // Read the files the server writes back

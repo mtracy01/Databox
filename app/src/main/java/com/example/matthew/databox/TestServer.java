@@ -51,26 +51,23 @@ public class TestServer {
 }
 
 class ServerThread implements Runnable{
-    private Connection cnn = null;
     private Socket incoming;
     private BufferedReader input;
     private BufferedWriter output;
+    String drivers = null;
     public ServerThread(Socket oneSocket){
         incoming = oneSocket;
         try{
-            cnn = getConnection();
             this.input = new BufferedReader(new InputStreamReader(this.incoming.getInputStream()));
             this.output = new BufferedWriter(new OutputStreamWriter(this.incoming.getOutputStream()));
         } catch(IOException e) {
             e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
-    public static Connection getConnection() throws SQLException, IOException {
+    public Connection getConnection() throws SQLException, IOException {
         Properties props = new Properties();
         props.load(new FileInputStream("database.properties"));
-        String drivers = props.getProperty("jdbc.drivers");
+        drivers = props.getProperty("jdbc.drivers");
         if(drivers != null){
             System.setProperty("jdbc.drivers", drivers);
         }
@@ -84,7 +81,7 @@ class ServerThread implements Runnable{
         if(msg.substring(0, 6).equals("USERID")){
             ret = checkUserID(msg);
         }
-        else if(msg.contains("GETFILES")){
+        else if(msg.substring(0, 7).equals("GETFILES")){
             ret = addUser(msg);
         }
         // TODO add other messages
@@ -96,7 +93,6 @@ class ServerThread implements Runnable{
     }
     String checkUserID(String read){
         // TODO have database check for user
-
         return "SUCCESS";
     }
     String addUser(String read){
@@ -104,25 +100,28 @@ class ServerThread implements Runnable{
         return "SUCCESS";
     }
     public void run(){
-        Connection conn = null;
-        try{
-            conn = getConnection();
-            while(!Thread.currentThread().isInterrupted()) {
-                try {
-                    String read = input.readLine();
-                    executeRequest(read);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        try
+        {
+            try
+            {
+                String read = input.readLine();
+                String returnString = executeRequest(read);
+                output.write(returnString, 0, returnString.length());
+
+                output.flush();
             }
-        }catch (Exception e){
-            e.printStackTrace();
-        } finally {
-            try {
-                incoming.close();
-            } catch (IOException e) {
+            catch (IOException e)
+            {
                 e.printStackTrace();
             }
+            finally
+            {
+                incoming.close();
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
         }
     }
 

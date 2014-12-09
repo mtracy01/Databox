@@ -44,7 +44,10 @@
                 android:textStyle="bold" />
 
             <Button
-                android:layout_width="350dp"
+                style="?android:textAppearanceSmall"
+                android:layout_marginTop="16dp"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Register"
                 android:id="@+id/email_register_button"
