@@ -81,11 +81,8 @@ class ServerThread implements Runnable{
         if(msg.substring(0, 6).equals("USERID")){
             ret = checkUserID(msg);
         }
-        else if (msg.substring(0, 7).equals("GETFILES")){
+        else if(msg.substring(0, 7).equals("GETFILES")){
             ret = addUser(msg);
-        }
-        else if (msg.substring(0, 8).equals("GETFILES")) {
-            return getFiles();
         }
         // TODO add other messages
         else {
@@ -101,10 +98,6 @@ class ServerThread implements Runnable{
     String addUser(String read){
         // TODO have database add user
         return "SUCCESS";
-    }
-    String getFiles(){
-        // TODO have database retrieve user's file list
-        return "File 1\nFile 2\nFile 3\n";
     }
     public void run(){
         try
