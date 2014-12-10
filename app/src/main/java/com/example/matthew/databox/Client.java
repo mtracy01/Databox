@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.Socket;
+import java.sql.Connection;
 
 /**
  * Created by Cris on 12/6/2014.
@@ -27,6 +28,8 @@ public class Client {
     private final static String SERVER = "sslab01.cs.purdue.edu";
     private final static int CHUNK = 4096;
     private final static int MSG_SIZE = 64;
+
+    Thread clientThread = null;
 
     // Different messages to send to server :)
     private final static String USERID = "USERID";
@@ -46,6 +49,10 @@ public class Client {
     private byte[] data = new byte[CHUNK];
     private char[] msg = new char[MSG_SIZE];
 
+    public void run(){
+
+    }
+
     /**
      * Constructor for Client class. Sets user name and initializes a MainActivity.
      *
@@ -54,6 +61,7 @@ public class Client {
     public Client(String username) {
         this.username = username;
         mainActivity = new MainActivity(username);
+
     }
 
     /**
@@ -63,7 +71,18 @@ public class Client {
      */
     private int initSocket() {
         try {
-            Socket socket = new Socket(SERVER, SERVERPORT);
+            Socket socket = null;
+
+            new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Socket socket = new Socket(SERVER, SERVERPORT);
+                }
+                catch (Exception e) {}
+            }
+            }.start();
+
             OutputStreamWriter osw = new OutputStreamWriter(socket.getOutputStream());
             InputStreamReader isr = new InputStreamReader(socket.getInputStream());
             bw = new BufferedWriter(osw);
