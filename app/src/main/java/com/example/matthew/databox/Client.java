@@ -308,11 +308,10 @@ public class Client {
                 bw.flush();
 
                 // Read socket until it's closed to get response from server
-                bytesRead = is.read(data, current, CHUNK);
+                bytesRead = is.read(data);
                 while (bytesRead != -1) {
                     fos.write(data, 0, bytesRead);
-                    current += bytesRead;
-                    bytesRead = is.read(data, current, CHUNK);
+                    bytesRead = is.read(data);
                 }
 
                 // If we reached this point without an exception we can assume the file was copied
