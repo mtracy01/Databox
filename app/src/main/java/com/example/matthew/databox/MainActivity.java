@@ -265,6 +265,7 @@ public class MainActivity extends Activity {
         // TODO display all of the files in the files ArrayList
         //files.add("Test1");
         //files.add("Test2");
+        client.getFiles();
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,files);
         list.setAdapter(adapter);
 
