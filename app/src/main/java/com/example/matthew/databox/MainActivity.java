@@ -54,16 +54,21 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle("Databox");
+        files=new ArrayList<String>();
         client = new Client(username);
+        client.getFiles();
         list= (ListView)findViewById(R.id.listView);
         list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         upload_b = (Button) findViewById(R.id.upload_b);
         //download_b = (Button) findViewById(R.id.download_b);
         refresh_b=(Button) findViewById(R.id.refresh_b);
+
         this.updateFiles();
         refresh_b.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
+                files=new ArrayList<String>();
+                client.getFiles();
                 updateFiles();
             }
         });
@@ -265,6 +270,8 @@ public class MainActivity extends Activity {
         // TODO display all of the files in the files ArrayList
         //files.add("Test1");
         //files.add("Test2");
+        //files= new ArrayList<String>();
+        //client.getFiles();
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,files);
         list.setAdapter(adapter);
 
