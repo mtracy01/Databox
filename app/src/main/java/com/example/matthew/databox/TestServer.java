@@ -37,8 +37,11 @@ public class TestServer {
     public static void main(String args[]){
         try{
             ServerSocket s = new ServerSocket(SERVERPORT);
+            System.out.println("Start main\n");
             while(true){
+                System.out.println("Need Accept\n");
                 Socket incoming = s.accept();
+                System.out.println("Accept\n");
                 Runnable r = new ServerThread(incoming);
                 Thread t = new Thread(r);
                 t.start();
@@ -73,6 +76,7 @@ class ServerThread implements Runnable{
         String url = props.getProperty("jdbc.url");
         String username = props.getProperty("jdbc.username");
         String password = props.getProperty("jdbc.password");
+        System.out.println("Connection is : url: "+url+username+" " +password+"\n");
         return DriverManager.getConnection(url,username,password);
     }
     String executeRequest(String msg,Connection conn) {
@@ -99,14 +103,18 @@ class ServerThread implements Runnable{
         return ret;
     }
     public String checkUserID(String read, Connection c ){
+        System.out.println("String is "+read+"\n");
         String nameAndPw = read.substring(read.indexOf(" ")+1);
         String userName = nameAndPw.substring(0,nameAndPw.indexOf(" "));
         String password = nameAndPw.substring(nameAndPw.indexOf(" ")+1);
+        System.out.println("String is "+userName+" \n" +password+"\n");
         Statement stmt = null;
+
         try{
-            Class.forName(drivers);
+            // Class.forName(drivers);
             stmt = c.createStatement();
             String sql = "SELECT * FROM user WHERE userName ='"+userName+"' AND password ='"+password+"'";
+            System.out.println(sql);
             ResultSet result = stmt.executeQuery(sql);
             if(result.next()){
                 String success = "SUCESS";
@@ -118,8 +126,6 @@ class ServerThread implements Runnable{
                 return fail;
                 //bw.write(fail, 0,  fail.length());
             }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -148,6 +154,7 @@ class ServerThread implements Runnable{
         Connection conn = null;
         try
         {
+            conn = getConnection();
             try
             {
                 String read = input.readLine();
@@ -164,6 +171,8 @@ class ServerThread implements Runnable{
             {
                 incoming.close();
             }
+        }catch(SQLException e){
+            e.printStackTrace();
         }
         catch (IOException e)
         {
