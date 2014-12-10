@@ -24,7 +24,7 @@ import java.net.Socket;
  */
 public class Client {
     private static final int SERVERPORT = 6000;
-    private final static String SERVER = "?";
+    private final static String SERVER = "127.0.0.1";
     private final static int CHUNK = 4096;
     private final static int MSG_SIZE = 64;
 
@@ -239,26 +239,24 @@ public class Client {
             try {
                 // Write an UPLOAD message to the server, data to follow new line
                 bw.write(UPLOAD, 0, UPLOAD.length());
-                bw.write(" " + filepath + "\n", 0, filepath.length() + 2);
+                bw.write(" " + username + " " + filepath + " ", 0, username.length() + filepath.length() + 3);
+                bw.flush();
 
                 // Read data from file, then write it to the server
-                bytesRead = fis.read(data, current, data.length);
+                bytesRead = fis.read(data);
                 while (bytesRead != -1) {
                     os.write(data, 0, bytesRead);
-                    current += bytesRead;
-                    bytesRead = fis.read(data, current, data.length);
+                    bytesRead = fis.read(data, 0, data.length);
                 }
                 bw.flush();
 
+                bw.write("\n", 0, 1);
+                bw.flush();
+
                 // Read socket until it's closed to get response from server
-                bytesRead = br.read(msg, current, MSG_SIZE);
-                while (bytesRead != -1) {
-                    if (new String(msg).equals("SUCCESS"))
-                        return 0;
-                    else if (new String(msg).equals("FAILURE"))
-                        return 1;
-                    bytesRead = br.read(msg, current, MSG_SIZE);
-                }
+                String response = br.readLine();
+                if (response.equals("SUCCESS"))
+                    return 0;
 
                 // We didn't get an expected message (or any message) from the server, return 1
                 return 1;
@@ -306,15 +304,14 @@ public class Client {
             try {
                 // Write the download request to the server
                 bw.write(DOWNLOAD, 0, DOWNLOAD.length());
-                bw.write(" " + filename, 0, filename.length() + 1);
+                bw.write(" " + username + " " + filename + "\n", 0, username.length() + filename.length() + 3);
                 bw.flush();
 
                 // Read socket until it's closed to get response from server
-                bytesRead = is.read(data, current, CHUNK);
+                bytesRead = is.read(data);
                 while (bytesRead != -1) {
                     fos.write(data, 0, bytesRead);
-                    current += bytesRead;
-                    bytesRead = is.read(data, current, CHUNK);
+                    bytesRead = is.read(data);
                 }
 
                 // If we reached this point without an exception we can assume the file was copied

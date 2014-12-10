@@ -115,8 +115,9 @@ public class MainActivity extends Activity {
                     }
                 });
                 builder.setPositiveButton("Cancel",new DialogInterface.OnClickListener(){ public void onClick(DialogInterface dialog, int id) {dialog.cancel();}});
-                if(fileList==null){
-                    dialog=builder.create();
+                if(fileList.length==0){
+                    //dialog=builder.create();
+                    return;
                 }
                 else{
                     builder.setItems(fileList,new DialogInterface.OnClickListener(){
@@ -164,8 +165,10 @@ public class MainActivity extends Activity {
             }
         });
         builder.setPositiveButton("Cancel",new DialogInterface.OnClickListener(){ public void onClick(DialogInterface dialog, int id) {dialog.cancel();}});
-        if(fileList==null){
-            dialog=builder.create();
+        if(fileList.length==1){
+            //dialog=builder.create();
+
+            return;
         }
         else{
             builder.setItems(fileList,new DialogInterface.OnClickListener(){
@@ -217,9 +220,14 @@ public class MainActivity extends Activity {
                 }
             });
             builder.setPositiveButton("Cancel",new DialogInterface.OnClickListener(){ public void onClick(DialogInterface dialog, int id) {dialog.cancel();}});
-            if(fileList==null){
+            if(fileList.length==0){
                 dialog=builder.create();
-                //return;
+                Toast toast = Toast.makeText(context,"The directory selected contains no files.",Toast.LENGTH_SHORT);
+                toast.show();
+                /*mPath=fi.getParentFile();
+                recursiveSelect(f);
+                return;*/
+
             }
             else{
                 builder.setItems(fileList,new DialogInterface.OnClickListener(){
@@ -248,8 +256,8 @@ public class MainActivity extends Activity {
 
     public void updateFiles() {
         // TODO display all of the files in the files ArrayList
-        files.add("Test1");
-        files.add("Test2");
+        //files.add("Test1");
+        //files.add("Test2");
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,files);
         list.setAdapter(adapter);
 

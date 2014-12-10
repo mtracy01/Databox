@@ -95,7 +95,7 @@ public class LoadingActivity extends Activity {
                             // If the ViewPropertyAnimator APIs aren't
                             // available, simply show or hide the in-layout UI
                             // controls.
-                            controlsView.setVisibility(visible ? View.VISIBLE : View.GONE);
+                            //controlsView.setVisibility(visible ? View.VISIBLE : View.GONE);
                         }
 
                         if (visible && AUTO_HIDE) {
@@ -133,7 +133,8 @@ public class LoadingActivity extends Activity {
         // Trigger the initial hide() shortly after the activity has been
         // created, to briefly hint to the user that UI controls
         // are available.
-        delayedHide(100);
+        //delayedHide(100);
+        mSystemUiHider.show();
     }
 
 
