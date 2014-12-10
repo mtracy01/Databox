@@ -1,4 +1,9 @@
-dataBox
+Databox
+December 9th, 2014
 =======
+Made by:
+Xiaojing Ji (Server and Database)
+Cris Shumate (Server Client)
+Matthew Tracy (User Interface)
 
-A ripoff of Dropbox
+An application for storing and retrieving files, similar to Dropbox.
