@@ -194,8 +194,8 @@ public class MainActivity extends Activity {
         fil2=fil2.concat(f);
         File fi = new File(fil2);
         /*CharSequence one = "File" + f;
-        CharSequence two = "File Path" + fil2;
-        Toast toast = Toast.makeText(context,one,Toast.LENGTH_SHORT);
+        harSequence two = "File Path" + fil2;
+        ToaCst toast = Toast.makeText(context,one,Toast.LENGTH_SHORT);
         toast.show();
         Toast toast2=Toast.makeText(context,two,Toast.LENGTH_SHORT);
         toast2.show();*/

@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -26,6 +27,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +47,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-
+    private Context context=this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,9 +150,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
      * errors are presented and no actual login attempt is made.
      */
     public void attemptLogin() {
-        if (mAuthTask != null) {
+        /*if (mAuthTask != null) {
             return;
-        }
+        }*/
 
         // Reset errors.
         mEmailView.setError(null);
@@ -192,7 +194,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             //showProgress(true);
             //mAuthTask = new UserLoginTask(email, password);
             //mAuthTask.execute((Void) null);
-
+            CharSequence two = "Attempting Login";
+            Toast toast = Toast.makeText(context, two, Toast.LENGTH_SHORT);
+            toast.show();
             //Attempt Login
             Client client = new Client(email);
             int check=client.checkUserID(email,password);
@@ -209,7 +213,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     }
 
     private boolean isEmailValid(String email) {
-        return email.contains("@") && !email.contains(" ");
+        return !email.contains(" ");
     }
 
     private boolean isPasswordValid(String password) {
