@@ -39,7 +39,6 @@ public class TestServer {
             ServerSocket s = new ServerSocket(SERVERPORT);
             while(true){
                 Socket incoming = s.accept();
-                System.out.println("Here\n");
                 Runnable r = new ServerThread(incoming);
                 Thread t = new Thread(r);
                 t.start();
