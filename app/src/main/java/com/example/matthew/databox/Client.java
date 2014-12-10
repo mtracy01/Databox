@@ -315,11 +315,11 @@ public class Client {
     public int download(String filename) {
         if (initSocket() == 1)
             return 1;
-
+        System.out.println("GOT HERE" + filename);
         try {
             // Create the file that's being downloaded
-            File f = new File(filename);
-            FileOutputStream fos = new FileOutputStream(f);
+            //File f = new File(filename);
+            //FileOutputStream fos = new FileOutputStream(filename);
 
             try {
                 // Write the download request to the server
@@ -328,11 +328,11 @@ public class Client {
                 bw.flush();
 
                 // Read socket until it's closed to get response from server
-                bytesRead = is.read(data);
-                while (bytesRead != -1) {
+                //bytesRead = is.read(data);
+                /*while (bytesRead != -1) {
                     fos.write(data, 0, bytesRead);
                     bytesRead = is.read(data);
-                }
+                }*/
 
                 // If we reached this point without an exception we can assume the file was copied
                 return 0;
@@ -347,11 +347,11 @@ public class Client {
                 return 1;
             }
         }
-        catch (FileNotFoundException e) {
+       /* catch (FileNotFoundException e) {
             System.out.println("File not found! : " + e.toString());
             e.printStackTrace();
             return 1;
-        }
+        }*/
         catch (Exception e) {
             e.printStackTrace();
             return 1;
