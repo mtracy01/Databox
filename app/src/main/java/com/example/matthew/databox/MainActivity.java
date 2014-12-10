@@ -30,7 +30,7 @@ import java.util.List;
 
 public class MainActivity extends Activity {
 
-    private static Button upload_b;
+    private static Button upload_b, refresh_b;
     private static List<String> files = new ArrayList<String>();
     private static ListView list;
     public static long selectedItem=-1;
@@ -59,7 +59,14 @@ public class MainActivity extends Activity {
         list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         upload_b = (Button) findViewById(R.id.upload_b);
         //download_b = (Button) findViewById(R.id.download_b);
+        refresh_b=(Button) findViewById(R.id.refresh_b);
         this.updateFiles();
+        refresh_b.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                updateFiles();
+            }
+        });
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
