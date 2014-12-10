@@ -24,7 +24,7 @@ import java.net.Socket;
  */
 public class Client {
     private static final int SERVERPORT = 6000;
-    private final static String SERVER = "128.10.25.101";
+    private final static String SERVER = "172.16.25.101";
     private final static int CHUNK = 4096;
     private final static int MSG_SIZE = 64;
 
