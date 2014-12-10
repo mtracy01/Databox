@@ -85,16 +85,16 @@ class ServerThread implements Runnable{
             ret = checkUserID(msg,conn);
         }
         else if(msg.substring(0, 6).equals("UPLOAD")){
-            ret = upload(msg);
+            ret = upload(msg,conn);
         }
         else if(msg.substring(0, 7).equals("ADDUSER")){
-            ret = addUser(msg);
+            ret = addUser(msg,conn);
         }
         else if (msg.substring(0, 8).equals("GETFILES")) {
-            ret = getFiles(msg);
+            ret = getFiles(msg,conn);
         }
         else if (msg.substring(0, 8).equals("DOWNLOAD")) {
-            ret = download(msg);
+            ret = download(msg,conn);
         }
         else {
             ret = "FAILURE";
@@ -117,10 +117,9 @@ class ServerThread implements Runnable{
             System.out.println(sql);
             ResultSet result = stmt.executeQuery(sql);
             if(result.next()){
-                String success = "SUCESS";
+                System.out.println("hi");
+                String success = "SUCCESS";
                 return "SUCCESS";
-                //bw.write(success, 0,  success.length());
-                //serverSocket.close();   //DO I NEED TO KEEP IT OPEN??
             } else {
                 String fail = "FAILURE";
                 return fail;
@@ -134,20 +133,143 @@ class ServerThread implements Runnable{
         return "FAILURE";
     }
 
-    String addUser(String read){
-        // TODO have database add user
+    public String addUser(String read, Connection c){
+        System.out.println("adduser\n");
+        //String exist = checkUserID(read,c);
+        String nameAndPw = read.substring(read.indexOf(" ")+1);
+        String userName = nameAndPw.substring(0,nameAndPw.indexOf(" "));
+        String password = nameAndPw.substring(nameAndPw.indexOf(" ")+1);
+
+        //	if(exist.equals("SUCCESS")){ return "FAILURE";}
+        PreparedStatement stmt = null;
+        try {
+            //Class.forName(drivers);
+
+            String sql = "INSERT INTO user (userName,password) values(?,?)";
+            stmt = c.prepareStatement(sql);
+            stmt.setString(1,userName);
+            stmt.setString(2,password);
+            if(stmt.executeUpdate()> 0)
+                System.out.println("success");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return "SUCCESS";
     }
-    String getFiles(String read){
-        // TODO have database retrieve user's files
-        return "File 1\nFile 2\nFile 3\n";
+
+    String getFiles(String read, Connection c){
+        System.out.println(read);
+        String uploading = read.substring(read.indexOf(" ")+1);
+        String userName = uploading;
+        PreparedStatement stmt = null;
+        String files = "";
+        try{
+
+            String sql = "SELECT * FROM file WHERE userName ='"+userName+"'";
+            System.out.println(sql);
+            stmt = c.prepareStatement(sql);
+            ResultSet result = stmt.executeQuery(sql);
+            while(result.next()){
+                System.out.println(files);
+                files += result.getString("fileName")+"\n";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        finally{
+            if(stmt!= null){
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return files;
     }
-    String upload(String read){
-        // TODO have database retrieve user's files
-        return "SUCCESS";
+    String upload(String read, Connection c){
+        System.out.println(read);
+        String returnVal = null;
+        String uploading = read.substring(read.indexOf(" ")+1);
+        String userName = uploading.substring(0,uploading.indexOf(" "));
+        uploading = uploading.substring(uploading.indexOf(" ")+1);
+        String fileName = uploading.substring(0,uploading.indexOf(" "));
+        System.out.println("fileName: "+fileName);
+        String reverse = new StringBuilder(fileName).reverse().toString();
+        int slash = reverse.indexOf("/");
+        fileName = fileName.substring(fileName.length()-slash);
+        uploading = uploading.substring(uploading.indexOf(" ")+1);
+        String fileContent = uploading;
+        PreparedStatement stmt = null;
+        PreparedStatement stmt1 = null;
+        System.out.println("userName: "+userName);
+        System.out.println("fileName: "+fileName);
+        System.out.println("fileContent: "+fileContent);
+
+        try{
+            String sql1 = "SELECT * FROM file WHERE userName ='"+userName+"' AND fileName ='"+fileName+"'";
+            System.out.println(sql1);
+            stmt1 = c.prepareStatement(sql1);
+            ResultSet result = stmt1.executeQuery(sql1);
+            if(result.next()){
+                returnVal = "FAILURE";
+                return returnVal;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try{
+            String sql = "INSERT INTO file (userName,fileName,content) values (?, ?, ?)";
+            stmt = c.prepareStatement(sql);
+            stmt.setString(1, userName);
+            stmt.setString(2, fileName);
+            stmt.setString(3,fileContent);
+
+            if(stmt.executeUpdate() > 0) {System.out.println("success\n");}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("go here\n");
+        returnVal = "SUCCESS";
+        return returnVal;
     }
-    String download(String read){
-        // TODO have database retrieve user's files
+
+    String download(String read, Connection c){
+        System.out.println(read);
+        String nameAndFile = read.substring(read.indexOf(" ")+1);
+        String userName = nameAndFile.substring(0,nameAndFile.indexOf(" "));
+        String fileName = nameAndFile.substring(nameAndFile.indexOf(" ")+1,nameAndFile.indexOf("\n") );
+        System.out.println("userName: "+userName);
+        System.out.println("fileName: "+fileName);
+        Statement stmt = null;
+        try{
+            // Class.forName(drivers);
+            stmt = c.createStatement();
+            String sql = "SELECT * FROM file WHERE userName ='"+userName+"'";
+            System.out.println(sql);
+            ResultSet result = stmt.executeQuery(sql);
+            if(result.next()){
+                System.out.println("hi");
+                String success = "SUCCESS";
+                return "SUCCESS";
+            } else {
+                String fail = "FAILURE";
+                return fail;
+                //bw.write(fail, 0,  fail.length());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return "SUCCESS";
     }
     public void run(){
