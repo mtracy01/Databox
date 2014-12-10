@@ -53,6 +53,7 @@ public class LoadingActivity extends Activity {
     {
         Intent intent = new Intent(LoadingActivity.this, LoginActivity.class);
         startActivity(intent);
+        //random commentness
     }
 
     @Override
