@@ -83,9 +83,9 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
         });
         Button bypassButton = (Button) findViewById(R.id.bypass);
         bypassButton.setOnClickListener(new OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) { bypass();}
-                                        });
+            @Override
+            public void onClick(View view) { bypass();}
+        });
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -190,7 +190,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             //showProgress(true);
-
             //mAuthTask = new UserLoginTask(email, password);
             //mAuthTask.execute((Void) null);
 
