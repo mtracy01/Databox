@@ -97,8 +97,10 @@ public class Client {
      * @return 0 on success, 1 on failure
      */
     public int checkUserID(String userID, String password) {
+        System.out.println("ENTERED CHECK USER ID");
         if (initSocket() == 1)
             return 1;
+        System.out.println("INITIALIZED SOCKET");
 
         // Send userID + password to server so it can check if that pair exists
         try {
