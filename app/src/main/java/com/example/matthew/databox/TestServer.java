@@ -1,4 +1,4 @@
-//package com.example.matthew.databox;
+package com.example.matthew.databox;
 
 /**
  * Created by Ji on 12/8/14.
@@ -193,6 +193,7 @@ class ServerThread implements Runnable{
     }
     String upload(String read, Connection c){
         System.out.println(read);
+        String returnVal = null;
         String uploading = read.substring(read.indexOf(" ")+1);
         String userName = uploading.substring(0,uploading.indexOf(" "));
         uploading = uploading.substring(uploading.indexOf(" ")+1);
@@ -204,12 +205,26 @@ class ServerThread implements Runnable{
         uploading = uploading.substring(uploading.indexOf(" ")+1);
         String fileContent = uploading;
         PreparedStatement stmt = null;
+        PreparedStatement stmt1 = null;
         System.out.println("userName: "+userName);
         System.out.println("fileName: "+fileName);
         System.out.println("fileContent: "+fileContent);
 
         try{
-
+            String sql1 = "SELECT * FROM file WHERE userName ='"+userName+"' AND fileName ='"+fileName+"'";
+            System.out.println(sql1);
+            stmt1 = c.prepareStatement(sql1);
+            ResultSet result = stmt1.executeQuery(sql1);
+            if(result.next()){
+                returnVal = "FAILURE";
+                return returnVal;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try{
             String sql = "INSERT INTO file (userName,fileName,content) values (?, ?, ?)";
             stmt = c.prepareStatement(sql);
             stmt.setString(1, userName);
@@ -223,12 +238,17 @@ class ServerThread implements Runnable{
             e.printStackTrace();
         }
         System.out.println("go here\n");
-        return "SUCCESS";
+        returnVal = "SUCCESS";
+        return returnVal;
     }
+
     String download(String read, Connection c){
+        System.out.println(read);
         String nameAndFile = read.substring(read.indexOf(" ")+1);
         String userName = nameAndFile.substring(0,nameAndFile.indexOf(" "));
         String fileName = nameAndFile.substring(nameAndFile.indexOf(" ")+1,nameAndFile.indexOf("\n") );
+        System.out.println("userName: "+userName);
+        System.out.println("fileName: "+fileName);
         Statement stmt = null;
         try{
             // Class.forName(drivers);
