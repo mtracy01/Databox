@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.Socket;
-import java.sql.Connection;
+import android.os.StrictMode;
 
 /**
  * Created by Cris on 12/6/2014.
@@ -64,6 +64,13 @@ public class Client {
 
     }
 
+    public void enableStrictMode()
+    {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
+    }
+
     /**
      * Initializes the sockets and input/output objects that will be needed. Resets current to 0.
      *
@@ -71,17 +78,9 @@ public class Client {
      */
     private int initSocket() {
         try {
-            Socket socket = null;
+            enableStrictMode();
 
-            new Thread() {
-            @Override
-            public void run() {
-                try {
-                    Socket socket = new Socket(SERVER, SERVERPORT);
-                }
-                catch (Exception e) {}
-            }
-            }.start();
+            Socket socket = new Socket(SERVER, SERVERPORT);
 
             OutputStreamWriter osw = new OutputStreamWriter(socket.getOutputStream());
             InputStreamReader isr = new InputStreamReader(socket.getInputStream());
