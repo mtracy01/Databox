@@ -75,10 +75,10 @@ class ServerThread implements Runnable{
         String password = props.getProperty("jdbc.password");
         return DriverManager.getConnection(url,username,password);
     }
-    String executeRequest(String msg) {
+    String executeRequest(String msg,Connection conn) {
         String ret;
         if(msg.substring(0, 6).equals("USERID")){
-            ret = checkUserID(msg);
+            ret = checkUserID(msg,conn);
         }
         else if(msg.substring(0, 6).equals("UPLOAD")){
             ret = upload(msg);
@@ -98,10 +98,36 @@ class ServerThread implements Runnable{
 
         return ret;
     }
-    String checkUserID(String read){
-        // TODO have database check for user
-        return "SUCCESS";
+    public String checkUserID(String read, Connection c ){
+        String nameAndPw = read.substring(read.indexOf(" ")+1);
+        String userName = nameAndPw.substring(0,nameAndPw.indexOf(" "));
+        String password = nameAndPw.substring(nameAndPw.indexOf(" ")+1);
+        Statement stmt = null;
+        try{
+            Class.forName(drivers);
+            stmt = c.createStatement();
+            String sql = "SELECT * FROM user WHERE userName ='"+userName+"' AND password ='"+password+"'";
+            ResultSet result = stmt.executeQuery(sql);
+            if(result.next()){
+                String success = "SUCESS";
+                return "SUCCESS";
+                //bw.write(success, 0,  success.length());
+                //serverSocket.close();   //DO I NEED TO KEEP IT OPEN??
+            } else {
+                String fail = "FAILURE";
+                return fail;
+                //bw.write(fail, 0,  fail.length());
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "FAILURE";
     }
+
     String addUser(String read){
         // TODO have database add user
         return "SUCCESS";
@@ -119,12 +145,13 @@ class ServerThread implements Runnable{
         return "SUCCESS";
     }
     public void run(){
+        Connection conn = null;
         try
         {
             try
             {
                 String read = input.readLine();
-                String returnString = executeRequest(read);
+                String returnString = executeRequest(read,conn);
                 output.write(returnString, 0, returnString.length());
 
                 output.flush();
