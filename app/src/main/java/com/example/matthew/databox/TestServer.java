@@ -76,13 +76,13 @@ class ServerThread implements Runnable{
         String password = props.getProperty("jdbc.password");
         return DriverManager.getConnection(url,username,password);
     }
-    String executeRequest(String msg) {
-        String ret;
+    String executeRequest(String msg, Connection c) {
+        String ret = "SUCCESS";
         if(msg.substring(0, 6).equals("USERID")){
-            ret = checkUserID(msg);
+            checkUserID(msg,c);
         }
         else if(msg.substring(0, 7).equals("GETFILES")){
-            ret = addUser(msg);
+            addUser(msg,c);
         }
         // TODO add other messages
         else {
@@ -91,27 +91,137 @@ class ServerThread implements Runnable{
 
         return ret;
     }
-    String checkUserID(String read){
-        // TODO have database check for user
-        return "SUCCESS";
+
+    public void checkUserID(String read, Connection c ){
+        String nameAndPw = read.substring(read.indexOf(" ")+1);
+        String userName = nameAndPw.substring(0,nameAndPw.indexOf(" "));
+        String password = nameAndPw.substring(nameAndPw.indexOf(" ")+1);
+        Statement stmt = null;
+        try{
+            Class.forName(drivers);
+            stmt = c.createStatement();
+            String sql = "SELECT * FROM user WHERE userName ='"+userName+"' AND password ='"+password+"'";
+            ResultSet result = stmt.executeQuery(sql);
+            if(result.next()){
+                String success = "SUCESS";
+                output.write(success, 0,  success.length());
+                //serverSocket.close();   //DO I NEED TO KEEP IT OPEN??
+            } else {
+                String fail = "FAILURE";
+                output.write(fail, 0,  fail.length());
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-    String addUser(String read){
-        // TODO have database add user
-        return "SUCCESS";
+
+    public void addUser(String read, Connection c){
+        String nameAndPw = read.substring(read.indexOf(" ")+1);
+        String userName = nameAndPw.substring(0,nameAndPw.indexOf(" "));
+        String password = nameAndPw.substring(nameAndPw.indexOf(" ")+1);
+        Statement stmt = null;
+        try {
+            Class.forName(drivers);
+            stmt = c.createStatement();
+            String sql = "VALUE('"+userName+"', '"+password+ "')";
+            stmt.executeUpdate("INSERT INTO user" +sql);
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void getFiles(String read, Connection c){
+        String nameAndPw = read.substring(read.indexOf(" ")+1);
+        String userName = nameAndPw.substring(0,nameAndPw.indexOf(" "));
+        // Check database tables, find all file names
+
+    }
+
+    public void uploadFile(String read, Connection c){
+        String userName = read.substring(0,5); // NEED TO BE MODIFIED
+        String type = read.substring(0,1);
+        String uploading = read.substring(read.indexOf(" ")+1);
+        String fileName = uploading.substring(0,uploading.indexOf("\n"));
+        String fileContent = uploading.substring(uploading.indexOf("\n")+1);
+        Statement stmt = null;
+        try{
+            Class.forName(drivers);
+            stmt = c.createStatement();
+            String sql = "VALUE('"+ userName +"', '"+fileName+"', '"+fileContent+"', '"+type;
+            stmt.executeUpdate("INSERT INTO file" +sql);
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void downloadFile(String read, Connection c){
+        String userName = read.substring(0,5); // NEED TO BE MODIFIED
+        String fileName = read.substring(read.indexOf(" ")+1);
+        PreparedStatement stmt = null;
+        try{
+            Class.forName(drivers);
+            stmt =c.prepareStatement("SELECT * FROM file");
+            ResultSet result = stmt.executeQuery();
+            while(result.next()){
+                String username = result.getString(1);
+                if(username.equals(userName)){
+                    /** if(result.getString(5)) {
+                     }**/
+                }
+            }
+
+
+        }catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
     }
     public void run(){
+        Connection conn = null;
         try
         {
+
             try
             {
-                String read = input.readLine();
-                String returnString = executeRequest(read);
+                conn = getConnection();
+                while(!Thread.currentThread().isInterrupted()) {
+                    try {
+
+                        String read = input.readLine();
+                        executeRequest(read, conn);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+               /** String read = input.readLine();
+                String returnString = executeRequest(read,conn);
                 output.write(returnString, 0, returnString.length());
 
-                output.flush();
+                output.flush();**/
             }
             catch (IOException e)
             {
+                e.printStackTrace();
+            }
+            catch (Exception e) {
                 e.printStackTrace();
             }
             finally

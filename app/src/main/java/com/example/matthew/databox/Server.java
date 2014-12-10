@@ -224,18 +224,6 @@ public class Server extends Activity{
      ServerThread(Socket oneSocket){
      incoming = oneSocket;
      }
-     public Connection getConnection() throws SQLException, IOException {
-     Properties props = new Properties();
-     props.load(new FileInputStream("database.properties"));
-     drivers = props.getProperty("jdbc.drivers");
-     if(drivers != null){
-     System.setProperty("jdbc.drivers", drivers);
-     }
-     String url = props.getProperty("jdbc.url");
-     String username = props.getProperty("jdbc.username");
-     String password = props.getProperty("jdbc.password");
-     return DriverManager.getConnection(url,username,password);
-     }
 
 
      public void checkUserID(String read, Connection c ){
@@ -265,15 +253,7 @@ public class Server extends Activity{
      }
      }
 
-     void executeRequest(String buffer){ //, Connection conn
-     if(buffer.contains("USERID")){
 
-     }
-     else if (buffer.contains("GETFILES")){
-
-     }
-
-     }
 
      public void run() {
      Socket socket;
