@@ -83,11 +83,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 attemptRegister();
             }
         });
-        Button bypassButton = (Button) findViewById(R.id.bypass);
+        /*Button bypassButton = (Button) findViewById(R.id.bypass);
         bypassButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) { bypass();}
-        });
+        });*/
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
