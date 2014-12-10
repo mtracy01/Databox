@@ -1,4 +1,4 @@
-package com.example.matthew.databox;
+//package com.example.matthew.databox;
 
 /**
  * Created by Ji on 12/8/14.
@@ -16,15 +16,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import javax.mail.*;
+import javax.mail.internet.*;
+import java.util.*;
+
 
 /**import android.app.Activity;
  import android.os.Bundle;**/
 import java.sql.*;
+
+
 public class TestServer {
     private static ServerSocket serverSocket;
     Thread serverThread = null;
     public static final int SERVERPORT = 6000;
-
 
     protected void onStop() {
         // super.onStop();
@@ -57,6 +62,18 @@ class ServerThread implements Runnable{
     private BufferedReader input;
     private BufferedWriter output;
     String drivers = null;
+    String d_email = "xiaojingji5@gmail.com",
+            d_password = "Jj931231", //your email password
+            d_host = "smtp.gmail.com",
+            d_port = "465",
+            m_to = "xiaojingji5@gmail.com", // Target email address
+            m_subject = "Testing",
+            m_text = "Hey, this is a test email.";
+    private class SMTPAuthenticator extends javax.mail.Authenticator {
+        public PasswordAuthentication getPasswordAuthentication() {
+            return new PasswordAuthentication(d_email, d_password);
+        }
+    }
     public ServerThread(Socket oneSocket){
         incoming = oneSocket;
         try{
@@ -65,6 +82,7 @@ class ServerThread implements Runnable{
         } catch(IOException e) {
             e.printStackTrace();
         }
+
     }
     public Connection getConnection() throws SQLException, IOException {
         Properties props = new Properties();
@@ -95,6 +113,7 @@ class ServerThread implements Runnable{
         }
         else if (msg.substring(0, 8).equals("DOWNLOAD")) {
             ret = download(msg,conn);
+            System.out.println("download\n");
         }
         else {
             ret = "FAILURE";
@@ -243,32 +262,51 @@ class ServerThread implements Runnable{
     }
 
     String download(String read, Connection c){
+
         System.out.println(read);
         String nameAndFile = read.substring(read.indexOf(" ")+1);
         String userName = nameAndFile.substring(0,nameAndFile.indexOf(" "));
-        String fileName = nameAndFile.substring(nameAndFile.indexOf(" ")+1,nameAndFile.indexOf("\n") );
+        String fileName = nameAndFile.substring(nameAndFile.indexOf(" ")+1);
         System.out.println("userName: "+userName);
         System.out.println("fileName: "+fileName);
         Statement stmt = null;
         try{
             // Class.forName(drivers);
             stmt = c.createStatement();
-            String sql = "SELECT * FROM file WHERE userName ='"+userName+"'";
+
+            String sql = "SELECT * FROM file WHERE userName ='"+userName+"' AND fileName ='"+fileName+"'";
             System.out.println(sql);
             ResultSet result = stmt.executeQuery(sql);
-            if(result.next()){
-                System.out.println("hi");
-                String success = "SUCCESS";
-                return "SUCCESS";
-            } else {
-                String fail = "FAILURE";
-                return fail;
-                //bw.write(fail, 0,  fail.length());
+            while(result.next()){
+                m_text = userName+":\n"+result.getString("content");
             }
+            //bw.write(fail, 0,  fail.length());
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        Properties props = new Properties();
+        props.put("mail.smtp.user", d_email);
+        props.put("mail.smtp.host", d_host);
+        props.put("mail.smtp.port", d_port);
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.auth", "true");
+        //props.put("mail.smtp.debug", "true");
+        props.put("mail.smtp.socketFactory.port", d_port);
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.socketFactory.fallback", "false");
+        try {
+            Authenticator auth = new SMTPAuthenticator();
+            Session session = Session.getInstance(props, auth);
+            MimeMessage msg = new MimeMessage(session);
+            msg.setText(m_text);
+            msg.setSubject(m_subject);
+            msg.setFrom(new InternetAddress(d_email));
+            msg.addRecipient(Message.RecipientType.TO, new InternetAddress(m_to));
+            Transport.send(msg);
+        } catch (Exception mex) {
+            mex.printStackTrace();
         }
         return "SUCCESS";
     }
